@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
+import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 import React from "react";
 
@@ -25,6 +26,7 @@ const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/about" element={<AboutUs />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
