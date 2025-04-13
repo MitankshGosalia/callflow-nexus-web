@@ -208,6 +208,11 @@
   .rounded-triangle {
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   }
+  
+  /* Audio wave animation for call visualization */
+  .animate-sound-wave {
+    animation: sound-wave 0.5s infinite alternate;
+  }
 }
 
 @keyframes float {
@@ -240,6 +245,16 @@
   }
   50% {
     opacity: 0.5;
+  }
+}
+
+/* Sound wave animation */
+@keyframes sound-wave {
+  0% {
+    height: 10%;
+  }
+  100% {
+    height: 100%;
   }
 }
 

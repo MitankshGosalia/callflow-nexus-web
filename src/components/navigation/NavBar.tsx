@@ -1,16 +1,31 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitcher } from '@/components/navigation/ThemeSwitcher';
 import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
+import { 
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function NavBar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [subMenuOpen, setSubMenuOpen] = useState<string | null>(null);
   const { t, isRTL } = useLanguage();
   const location = useLocation();
   
@@ -28,11 +43,49 @@ export function NavBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
+  const toggleSubMenu = (menu: string) => {
+    setSubMenuOpen(subMenuOpen === menu ? null : menu);
+  };
+  
   const navLinks = [
-    { name: t('features'), href: '/features' },
-    { name: t('solutions'), href: '/solutions' },
-    { name: t('pricing'), href: '/pricing' },
-    { name: t('about'), href: '/about' },
+    { 
+      name: t('features'), 
+      href: '/features',
+      subLinks: []
+    },
+    { 
+      name: t('products'), 
+      href: '/products',
+      subLinks: [
+        { name: "AI Call Center", href: "/products#ai-call-center" },
+        { name: "Virtual Assistant", href: "/products#virtual-assistant" },
+        { name: "Analytics Suite", href: "/products#analytics-suite" },
+      ]
+    },
+    { 
+      name: t('solutions'), 
+      href: '/solutions',
+      subLinks: []
+    },
+    {
+      name: t('resources'),
+      href: '#',
+      subLinks: [
+        { name: "Documentation", href: "/documentation" },
+        { name: "Use Cases", href: "/use-cases" },
+        { name: "Blog", href: "/blog" },
+      ]
+    },
+    { 
+      name: t('pricing'), 
+      href: '/pricing',
+      subLinks: []
+    },
+    { 
+      name: t('about'), 
+      href: '/about',
+      subLinks: []
+    },
   ];
   
   return (
@@ -61,30 +114,59 @@ export function NavBar() {
           </div>
         </Link>
         
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => {
-            const isActive = location.pathname === link.href || 
-                             (link.href !== '/' && location.pathname.startsWith(link.href));
-                             
-            return (
-              <Link
-                key={link.name}
-                to={link.href}
-                className={cn(
-                  "text-foreground/80 hover:text-foreground transition-colors",
-                  isActive && "text-primary font-medium"
-                )}
-              >
-                {link.name}
-              </Link>
-            );
-          })}
+        {/* Desktop Navigation - with megamenu */}
+        <div className="hidden lg:block">
+          <NavigationMenu className="z-10">
+            <NavigationMenuList>
+              {navLinks.map((link) => (
+                <NavigationMenuItem key={link.name}>
+                  {link.subLinks.length > 0 ? (
+                    <>
+                      <NavigationMenuTrigger className="bg-transparent">
+                        {link.name}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid w-[400px] gap-3 p-4">
+                          {link.subLinks.map((subLink) => (
+                            <li key={subLink.name}>
+                              <NavigationMenuLink asChild>
+                                <Link
+                                  to={subLink.href}
+                                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                >
+                                  <div className="text-sm font-medium leading-none">
+                                    {subLink.name}
+                                  </div>
+                                </Link>
+                              </NavigationMenuLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className={cn(
+                        "flex items-center px-4 py-2 text-sm font-medium transition-colors",
+                        location.pathname === link.href || 
+                        (link.href !== '/' && location.pathname.startsWith(link.href))
+                          ? "text-primary" 
+                          : "text-foreground/80 hover:text-foreground"
+                      )}
+                    >
+                      {link.name}
+                    </Link>
+                  )}
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
         
         {/* Right side actions */}
         <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-2">
             <LanguageSwitcher />
             <ThemeSwitcher />
             <Button 
@@ -103,7 +185,7 @@ export function NavBar() {
           <Button 
             variant="ghost" 
             size="sm" 
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setOpen(!open)}
           >
             {open ? <X /> : <Menu />}
@@ -114,20 +196,51 @@ export function NavBar() {
       {/* Mobile Navigation */}
       <div 
         className={cn(
-          'fixed inset-0 bg-background/95 backdrop-blur-sm z-40 flex flex-col md:hidden transition-all duration-300 pt-24 pb-6 px-6',
+          'fixed inset-0 bg-background/95 backdrop-blur-sm z-40 flex flex-col lg:hidden transition-all duration-300 pt-24 pb-6 px-6',
           open ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full pointer-events-none'
         )}
       >
-        <div className="flex flex-col space-y-4 mb-8">
+        <div className="flex flex-col space-y-1">
           {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.href}
-              className="text-foreground text-lg py-2 border-b border-border"
-              onClick={() => setOpen(false)}
-            >
-              {link.name}
-            </Link>
+            <div key={link.name} className="border-b border-border">
+              {link.subLinks.length > 0 ? (
+                <div>
+                  <button
+                    className="flex items-center justify-between w-full text-foreground py-3 text-left"
+                    onClick={() => toggleSubMenu(link.name)}
+                  >
+                    <span>{link.name}</span>
+                    {subMenuOpen === link.name ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </button>
+                  {subMenuOpen === link.name && (
+                    <div className="pl-4 pb-2 space-y-1">
+                      {link.subLinks.map((subLink) => (
+                        <Link
+                          key={subLink.name}
+                          to={subLink.href}
+                          className="block py-2 text-foreground/80 hover:text-foreground"
+                          onClick={() => setOpen(false)}
+                        >
+                          {subLink.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to={link.href}
+                  className="block text-foreground py-3"
+                  onClick={() => setOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              )}
+            </div>
           ))}
         </div>
         
