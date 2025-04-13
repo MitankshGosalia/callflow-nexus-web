@@ -4,11 +4,41 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 // Define available languages
 export type Language = 'en' | 'es' | 'fr' | 'hi' | 'ar';
 
+// Define translations interface with nested structures
+interface TranslationFeatures {
+  title: string;
+  voiceRecognition: string;
+  voiceRecognitionDesc: string;
+  naturalLanguage: string;
+  naturalLanguageDesc: string;
+  automation: string;
+  automationDesc: string;
+  analytics: string;
+  analyticsDesc: string;
+}
+
+interface TranslationHero {
+  heading: string;
+  subheading: string;
+}
+
+interface LanguageTranslation {
+  title: string;
+  subtitle: string;
+  getStarted: string;
+  learnMore: string;
+  features: string;
+  solutions: string;
+  pricing: string;
+  contact: string;
+  about: string;
+  hero: TranslationHero;
+  featuresSection: TranslationFeatures;
+}
+
 // Define translations interface
 interface Translations {
-  [key: string]: {
-    [key: string]: string;
-  };
+  [key: string]: LanguageTranslation;
 }
 
 // Sample translations for demonstration
@@ -27,7 +57,7 @@ const translations: Translations = {
       heading: "Transform Your Customer Experience",
       subheading: "Powerful AI-driven telephony that understands, responds, and learns."
     },
-    features: {
+    featuresSection: {
       title: "Revolutionary Features",
       voiceRecognition: "Advanced Voice Recognition",
       voiceRecognitionDesc: "Accurately transcribe and understand customer requests with 98% accuracy.",
@@ -53,7 +83,7 @@ const translations: Translations = {
       heading: "Transforme Su Experiencia de Cliente",
       subheading: "Telefonía potente impulsada por IA que entiende, responde y aprende."
     },
-    features: {
+    featuresSection: {
       title: "Características Revolucionarias",
       voiceRecognition: "Reconocimiento de Voz Avanzado",
       voiceRecognitionDesc: "Transcriba y comprenda con precisión las solicitudes de los clientes con un 98% de precisión.",
@@ -79,7 +109,7 @@ const translations: Translations = {
       heading: "Transformez Votre Expérience Client",
       subheading: "Téléphonie puissante basée sur l'IA qui comprend, répond et apprend."
     },
-    features: {
+    featuresSection: {
       title: "Fonctionnalités Révolutionnaires",
       voiceRecognition: "Reconnaissance Vocale Avancée",
       voiceRecognitionDesc: "Transcrivez et comprenez avec précision les demandes des clients avec une précision de 98%.",
@@ -105,7 +135,7 @@ const translations: Translations = {
       heading: "अपने ग्राहक अनुभव को बदलें",
       subheading: "शक्तिशाली एआई-संचालित टेलीफोनी जो समझती है, जवाब देती है और सीखती है।"
     },
-    features: {
+    featuresSection: {
       title: "क्रांतिकारी विशेषताएं",
       voiceRecognition: "उन्नत आवाज पहचान",
       voiceRecognitionDesc: "98% सटीकता के साथ ग्राहक अनुरोधों को सटीक रूप से प्रतिलिपि बनाएं और समझें।",
@@ -131,7 +161,7 @@ const translations: Translations = {
       heading: "قم بتحويل تجربة العملاء لديك",
       subheading: "هاتف قوي مدعوم بالذكاء الاصطناعي يفهم ويستجيب ويتعلم."
     },
-    features: {
+    featuresSection: {
       title: "ميزات ثورية",
       voiceRecognition: "التعرف المتقدم على الصوت",
       voiceRecognitionDesc: "نسخ وفهم طلبات العملاء بدقة تصل إلى 98٪.",
@@ -176,10 +206,32 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   // Translation function
   const t = (key: string, section?: string): string => {
-    if (section) {
-      return translations[language]?.[section]?.[key] || translations.en[section]?.[key] || key;
+    try {
+      if (section) {
+        // Handle nested sections
+        const sectionParts = section.split('.');
+        
+        if (sectionParts.length > 1) {
+          // For deeply nested keys like "features.title"
+          const mainSection = sectionParts[0];
+          const subKey = sectionParts[1];
+          
+          // @ts-ignore - We'll handle this dynamically
+          return translations[language]?.[mainSection]?.[subKey] || 
+                translations.en[mainSection]?.[subKey] || key;
+        }
+        
+        // @ts-ignore - Safe because we've defined structure
+        return translations[language]?.[section]?.[key] || 
+               translations.en[section]?.[key] || key;
+      }
+      
+      // Handle top-level keys
+      return translations[language]?.[key] || translations.en[key] || key;
+    } catch (error) {
+      console.error(`Translation error for key ${key} in section ${section}:`, error);
+      return key; // Fallback to key itself
     }
-    return translations[language]?.[key] || translations.en[key] || key;
   };
 
   // Set the document direction based on language

@@ -36,26 +36,26 @@ export function FeaturesSection() {
   const features = [
     {
       icon: <Mic className="h-6 w-6 text-white" />,
-      title: t('features.voiceRecognition', 'features'),
-      description: t('features.voiceRecognitionDesc', 'features'),
+      title: t('voiceRecognition', 'featuresSection'),
+      description: t('voiceRecognitionDesc', 'featuresSection'),
       gradient: 'from-primary to-primary-400',
     },
     {
       icon: <Brain className="h-6 w-6 text-white" />,
-      title: t('features.naturalLanguage', 'features'),
-      description: t('features.naturalLanguageDesc', 'features'),
+      title: t('naturalLanguage', 'featuresSection'),
+      description: t('naturalLanguageDesc', 'featuresSection'),
       gradient: 'from-secondary to-secondary-400',
     },
     {
       icon: <Workflow className="h-6 w-6 text-white" />,
-      title: t('features.automation', 'features'),
-      description: t('features.automationDesc', 'features'),
+      title: t('automation', 'featuresSection'),
+      description: t('automationDesc', 'featuresSection'),
       gradient: 'from-accent to-accent-400',
     },
     {
       icon: <BarChart3 className="h-6 w-6 text-white" />,
-      title: t('features.analytics', 'features'),
-      description: t('features.analyticsDesc', 'features'),
+      title: t('analytics', 'featuresSection'),
+      description: t('analyticsDesc', 'featuresSection'),
       gradient: 'from-primary-600 to-blue-light',
     },
   ];
@@ -69,10 +69,10 @@ export function FeaturesSection() {
       <div className="container">
         <FadeIn>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            {t('features.title', 'features')}
+            {t('title', 'featuresSection')}
           </h2>
           <p className="text-xl text-center text-muted-foreground mb-16 max-w-3xl mx-auto">
-            Our AI-powered call system brings unmatched capabilities to your business communications
+            {t('subtitle', 'featuresSection') || "Our AI-powered call system brings unmatched capabilities to your business communications"}
           </p>
         </FadeIn>
         
