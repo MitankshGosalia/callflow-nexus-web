@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { FadeIn } from '@/components/animations/AnimatedElement';
 import { FloatingElements } from '@/components/animations/FloatingElements';
@@ -51,12 +52,16 @@ export function HeroSection() {
           
           <FadeIn delay={700}>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <Button size="lg" className="text-lg group">
-                {t('getStarted')}
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <Button size="lg" className="text-lg group" asChild>
+                <Link to="/pricing">
+                  {t('getStarted')}
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </Button>
-              <Button size="lg" variant="outline" className="text-lg">
-                {t('learnMore')}
+              <Button size="lg" variant="outline" className="text-lg" asChild>
+                <Link to="/features">
+                  {t('learnMore')}
+                </Link>
               </Button>
             </div>
           </FadeIn>

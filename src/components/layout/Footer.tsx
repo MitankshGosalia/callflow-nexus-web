@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Facebook, Twitter, Instagram, Linkedin, Github } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 import { ThemeSwitcher } from '@/components/navigation/ThemeSwitcher';
@@ -15,37 +15,37 @@ export function Footer() {
     {
       title: 'Product',
       links: [
-        { name: 'Features', href: '#features' },
-        { name: 'Solutions', href: '#solutions' },
-        { name: 'Pricing', href: '#pricing' },
-        { name: 'Demo', href: '#demo' },
+        { name: 'Features', href: '/features' },
+        { name: 'Solutions', href: '/solutions' },
+        { name: 'Pricing', href: '/pricing' },
+        { name: 'Demo', href: '/#demo' },
       ]
     },
     {
       title: 'Company',
       links: [
-        { name: 'About Us', href: '#about' },
-        { name: 'Careers', href: '#careers' },
-        { name: 'Blog', href: '#blog' },
-        { name: 'Press', href: '#press' },
+        { name: 'About Us', href: '/about' },
+        { name: 'Careers', href: '/about#careers' },
+        { name: 'Blog', href: '/about#blog' },
+        { name: 'Press', href: '/about#press' },
       ]
     },
     {
       title: 'Resources',
       links: [
-        { name: 'Documentation', href: '#docs' },
-        { name: 'Tutorials', href: '#tutorials' },
-        { name: 'Case Studies', href: '#case-studies' },
-        { name: 'FAQ', href: '#faq' },
+        { name: 'Documentation', href: '/features#docs' },
+        { name: 'Tutorials', href: '/features#tutorials' },
+        { name: 'Case Studies', href: '/features#case-studies' },
+        { name: 'FAQ', href: '/pricing#faq' },
       ]
     },
     {
       title: 'Legal',
       links: [
-        { name: 'Privacy', href: '#privacy' },
-        { name: 'Terms', href: '#terms' },
-        { name: 'Security', href: '#security' },
-        { name: 'GDPR', href: '#gdpr' },
+        { name: 'Privacy', href: '/about#privacy' },
+        { name: 'Terms', href: '/about#terms' },
+        { name: 'Security', href: '/about#security' },
+        { name: 'GDPR', href: '/about#gdpr' },
       ]
     },
   ];
@@ -102,12 +102,21 @@ export function Footer() {
               <ul className="space-y-3">
                 {column.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <a
-                      href={link.href}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.name}
-                    </a>
+                    {link.href.startsWith('/') ? (
+                      <Link
+                        to={link.href}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.name}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

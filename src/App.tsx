@@ -9,6 +9,10 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
+import Features from "./pages/Features";
+import Solutions from "./pages/Solutions";
+import Pricing from "./pages/Pricing";
+import Contact from "./pages/Contact";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -27,6 +31,10 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<AboutUs />} />
+                <Route path="/features" element={<Features />} />
+                <Route path="/solutions" element={<Solutions />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitcher } from '@/components/navigation/ThemeSwitcher';
@@ -12,6 +12,7 @@ export function NavBar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { t, isRTL } = useLanguage();
+  const location = useLocation();
   
   // Handle scroll effect
   useEffect(() => {
@@ -28,10 +29,10 @@ export function NavBar() {
   }, []);
   
   const navLinks = [
-    { name: t('features'), href: '#features' },
-    { name: t('solutions'), href: '#solutions' },
-    { name: t('pricing'), href: '#pricing' },
-    { name: t('about'), href: '#about' },
+    { name: t('features'), href: '/features' },
+    { name: t('solutions'), href: '/solutions' },
+    { name: t('pricing'), href: '/pricing' },
+    { name: t('about'), href: '/about' },
   ];
   
   return (
@@ -62,15 +63,23 @@ export function NavBar() {
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-foreground/80 hover:text-foreground transition-colors link-underline hover:no-underline"
-            >
-              {link.name}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.href || 
+                             (link.href !== '/' && location.pathname.startsWith(link.href));
+                             
+            return (
+              <Link
+                key={link.name}
+                to={link.href}
+                className={cn(
+                  "text-foreground/80 hover:text-foreground transition-colors",
+                  isActive && "text-primary font-medium"
+                )}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
         
         {/* Right side actions */}
@@ -78,11 +87,15 @@ export function NavBar() {
           <div className="hidden md:flex items-center gap-1">
             <LanguageSwitcher />
             <ThemeSwitcher />
-            <Button variant="ghost" className="text-foreground/80 hover:text-foreground">
-              {t('contact')}
+            <Button 
+              variant="ghost" 
+              className="text-foreground/80 hover:text-foreground"
+              asChild
+            >
+              <Link to="/contact">{t('contact')}</Link>
             </Button>
-            <Button className="bg-primary hover:bg-primary/90">
-              {t('getStarted')}
+            <Button className="bg-primary hover:bg-primary/90" asChild>
+              <Link to="/pricing">{t('getStarted')}</Link>
             </Button>
           </div>
           
@@ -107,14 +120,14 @@ export function NavBar() {
       >
         <div className="flex flex-col space-y-4 mb-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
+              to={link.href}
               className="text-foreground text-lg py-2 border-b border-border"
               onClick={() => setOpen(false)}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </div>
         
@@ -125,11 +138,20 @@ export function NavBar() {
           </div>
           
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" className="w-full" onClick={() => setOpen(false)}>
-              {t('contact')}
+            <Button 
+              variant="outline" 
+              className="w-full" 
+              onClick={() => setOpen(false)}
+              asChild
+            >
+              <Link to="/contact">{t('contact')}</Link>
             </Button>
-            <Button className="w-full" onClick={() => setOpen(false)}>
-              {t('getStarted')}
+            <Button 
+              className="w-full" 
+              onClick={() => setOpen(false)}
+              asChild
+            >
+              <Link to="/pricing">{t('getStarted')}</Link>
             </Button>
           </div>
         </div>
