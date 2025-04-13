@@ -1,5 +1,5 @@
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Define available languages
 export type Language = 'en' | 'es' | 'fr' | 'hi' | 'ar';
@@ -15,6 +15,7 @@ interface TranslationFeatures {
   automationDesc: string;
   analytics: string;
   analyticsDesc: string;
+  subtitle?: string; // Make this optional to match the structure
 }
 
 interface TranslationHero {
@@ -186,7 +187,7 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
 
   // Language display names
@@ -235,7 +236,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Set the document direction based on language
-  React.useEffect(() => {
+  useEffect(() => {
     document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
   }, [language, isRTL]);

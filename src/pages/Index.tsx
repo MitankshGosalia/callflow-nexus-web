@@ -8,6 +8,8 @@ import { CTASection } from '@/components/home/CTASection';
 import { Footer } from '@/components/layout/Footer';
 
 const Index = () => {
+  console.log("Rendering Index page");
+  
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
