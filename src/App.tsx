@@ -12,19 +12,6 @@ import React from "react";
 
 const queryClient = new QueryClient();
 
-// Create a simple component to verify the language context is working
-const LanguageDebugger = () => {
-  console.log("Rendering language debugger");
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  );
-};
-
 const App = () => {
   console.log("Rendering App component");
   
@@ -35,7 +22,12 @@ const App = () => {
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <LanguageDebugger />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
           </TooltipProvider>
         </LanguageProvider>
       </ThemeProvider>
