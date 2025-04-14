@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +21,6 @@ import {
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 
-// Define employee type - this will be used for the subordinate employees
 interface Employee {
   email: string;
   password: string;
@@ -30,7 +28,6 @@ interface Employee {
   role: string;
 }
 
-// Define our schema for form validation
 const formSchema = z.object({
   businessName: z.string().min(2, "Business name must be at least 2 characters."),
   businessAddress: z.string().min(5, "Address must be at least 5 characters."),
@@ -56,9 +53,8 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [newEmployee, setNewEmployee] = useState<Employee>({ email: '', password: '', name: '', role: '' });
-  const [formRef, inView] = useInView({ threshold: 0.1, once: true });
+  const [formRef, inView] = useInView<HTMLDivElement>({ threshold: 0.1, once: true });
   
-  // Initialize the form with react-hook-form and zod validation
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -74,29 +70,24 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
       confirmPassword: ""
     },
   });
-  
-  // Form steps logic
+
   const nextStep = () => {
     const currentFields = [
-      // Step 1 fields (Business Information)
       ['businessName', 'businessAddress', 'businessWebsite', 'businessPhone', 'businessDescription', 'industry'],
-      // Step 2 fields (Admin Account)
       ['adminName', 'adminEmail', 'adminPassword', 'confirmPassword']
     ][currentStep - 1];
     
-    // Validate current step fields
     form.trigger(currentFields as any).then(isValid => {
       if (isValid) {
         setCurrentStep(prev => Math.min(prev + 1, 3));
       }
     });
   };
-  
+
   const prevStep = () => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
-  
-  // Add employee to the list
+
   const handleAddEmployee = () => {
     if (newEmployee.email && newEmployee.password && newEmployee.name) {
       setEmployees([...employees, { ...newEmployee }]);
@@ -104,21 +95,17 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
       toast({ description: "Employee added successfully" });
     }
   };
-  
-  // Remove employee from the list
+
   const handleRemoveEmployee = (index: number) => {
     const updatedEmployees = employees.filter((_, i) => i !== index);
     setEmployees(updatedEmployees);
     toast({ description: "Employee removed" });
   };
-  
-  // On form submit
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("Form values:", values);
     console.log("Employees:", employees);
     
-    // Here you would typically send the data to your backend
-    // For now, we'll simulate a successful registration
     setTimeout(() => {
       onSuccess();
     }, 1500);
@@ -140,7 +127,6 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
           {t('registrationDescription')}
         </CardDescription>
         
-        {/* Step indicator */}
         <div className="w-full mt-6">
           <div className="flex justify-between">
             {[1, 2, 3].map((step) => (
@@ -179,7 +165,6 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
       <CardContent className="pt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Step 1: Business Information */}
             {currentStep === 1 && (
               <div className="space-y-4 animate-fade-in">
                 <FormField
@@ -283,7 +268,6 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
               </div>
             )}
 
-            {/* Step 2: Admin Account */}
             {currentStep === 2 && (
               <div className="space-y-4 animate-fade-in">
                 <FormField
@@ -357,7 +341,6 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
               </div>
             )}
 
-            {/* Step 3: Employee Access */}
             {currentStep === 3 && (
               <div className="space-y-6 animate-fade-in">
                 <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
@@ -368,7 +351,6 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                     {t('employeeAccountsDescription')}
                   </p>
                   
-                  {/* Add employee form */}
                   <div className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <Input 
@@ -407,7 +389,6 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                   </div>
                 </div>
                 
-                {/* Employee list */}
                 <div>
                   <h4 className="text-md font-medium mb-2">
                     {t('addedEmployees')} ({employees.length})
@@ -449,14 +430,13 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
               </div>
             )}
 
-            {/* Navigation buttons */}
             <div className="pt-4 border-t flex justify-between">
               {currentStep > 1 ? (
                 <Button type="button" variant="outline" onClick={prevStep}>
                   {t('previous')}
                 </Button>
               ) : (
-                <div></div> // Empty div for spacing
+                <div></div>
               )}
               
               {currentStep < 3 ? (

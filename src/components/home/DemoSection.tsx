@@ -56,33 +56,33 @@ export function DemoSection() {
   const demoOptions = [
     {
       icon: <HelpCircle className="h-4 w-4" />,
-      label: t('askQuestion', 'demoSection'),
-      query: t('howCanAssist', 'demoSection')
+      label: t('askQuestion'),
+      query: t('howCanAssist')
     },
     {
       icon: <Info className="h-4 w-4" />,
-      label: t('requestInfo', 'demoSection'),
-      query: t('businessHours', 'demoSection')
+      label: t('requestInfo'),
+      query: t('businessHours')
     },
     {
       icon: <User className="h-4 w-4" />,
-      label: t('accountHelp', 'demoSection'),
-      query: t('accountSettings', 'demoSection')
+      label: t('accountHelp'),
+      query: t('accountSettings')
     }
   ];
   
   // Bot responses to demo queries
   const getBotResponse = (query: string): string => {
-    if (query.includes(t('howCanAssist', 'demoSection'))) {
-      return t('assistResponse', 'demoSection');
+    if (query.includes(t('howCanAssist'))) {
+      return t('assistResponse');
     }
-    if (query.includes(t('businessHours', 'demoSection'))) {
-      return t('hoursResponse', 'demoSection');
+    if (query.includes(t('businessHours'))) {
+      return t('hoursResponse');
     }
-    if (query.includes(t('accountSettings', 'demoSection'))) {
-      return t('accountResponse', 'demoSection');
+    if (query.includes(t('accountSettings'))) {
+      return t('accountResponse');
     }
-    return t('defaultResponse', 'demoSection');
+    return t('defaultResponse');
   };
   
   // Add a new message to the chat
@@ -120,7 +120,7 @@ export function DemoSection() {
     // Simulate recording for 3 seconds
     setTimeout(() => {
       setIsRecording(false);
-      handleSendMessage(t('voiceQuery', 'demoSection'));
+      handleSendMessage(t('voiceQuery'));
     }, 3000);
   };
   
@@ -143,7 +143,7 @@ export function DemoSection() {
   // Start with welcome message
   useEffect(() => {
     const timer = setTimeout(() => {
-      addMessage(t('welcomeMessage', 'demoSection'), 'bot');
+      addMessage(t('welcomeMessage'), 'bot');
     }, 800);
     
     return () => clearTimeout(timer);
@@ -170,10 +170,10 @@ export function DemoSection() {
       <div className="container">
         <FadeIn>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            {t('title', 'demoSection')}
+            {t('title')}
           </h2>
           <p className="text-xl text-center text-muted-foreground mb-16 max-w-3xl mx-auto">
-            {t('subtitle', 'demoSection')}
+            {t('subtitle')}
           </p>
         </FadeIn>
         
@@ -191,8 +191,8 @@ export function DemoSection() {
                     <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-card"></span>
                   </div>
                   <div>
-                    <h3 className="font-medium">{t('aiAssistant', 'demoSection')}</h3>
-                    <p className="text-xs text-muted-foreground">{t('online', 'demoSection')}</p>
+                    <h3 className="font-medium">{t('aiAssistant')}</h3>
+                    <p className="text-xs text-muted-foreground">{t('online')}</p>
                   </div>
                 </div>
                 <Button variant="ghost" size="icon">
@@ -269,7 +269,7 @@ export function DemoSection() {
                         variant="outline"
                         size="icon" 
                         className="rounded-full"
-                        onClick={() => handleSendMessage(t('textMessage', 'demoSection'))}
+                        onClick={() => handleSendMessage(t('textMessage'))}
                       >
                         <Send className="h-4 w-4" />
                       </Button>
@@ -290,9 +290,9 @@ export function DemoSection() {
                 <span className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
                   <Bot className="h-5 w-5 text-primary" />
                 </span>
-                {t('instantResponses', 'demoSection')}
+                {t('instantResponses')}
               </h3>
-              <p className="text-muted-foreground">{t('instantResponsesDesc', 'demoSection')}</p>
+              <p className="text-muted-foreground">{t('instantResponsesDesc')}</p>
             </div>
             
             <div>
@@ -300,9 +300,9 @@ export function DemoSection() {
                 <span className="w-8 h-8 bg-secondary/20 rounded-lg flex items-center justify-center">
                   <Mic className="h-5 w-5 text-secondary" />
                 </span>
-                {t('voiceEnabled', 'demoSection')}
+                {t('voiceEnabled')}
               </h3>
-              <p className="text-muted-foreground">{t('voiceEnabledDesc', 'demoSection')}</p>
+              <p className="text-muted-foreground">{t('voiceEnabledDesc')}</p>
             </div>
             
             <div>
@@ -310,13 +310,13 @@ export function DemoSection() {
                 <span className="w-8 h-8 bg-accent/20 rounded-lg flex items-center justify-center">
                   <User className="h-5 w-5 text-accent" />
                 </span>
-                {t('personalizedExperience', 'demoSection')}
+                {t('personalizedExperience')}
               </h3>
-              <p className="text-muted-foreground">{t('personalizedExperienceDesc', 'demoSection')}</p>
+              <p className="text-muted-foreground">{t('personalizedExperienceDesc')}</p>
             </div>
             
             <Button size="lg" className="mt-6">
-              {t('startFreeTrial', 'demoSection')}
+              {t('startFreeTrial')}
             </Button>
           </FadeIn>
         </div>

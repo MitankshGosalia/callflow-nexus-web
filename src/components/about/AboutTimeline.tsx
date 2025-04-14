@@ -8,7 +8,7 @@ export function AboutTimeline() {
   const { t } = useLanguage();
   
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section id="about-timeline" className="py-24 relative overflow-hidden">
       <FloatingElements 
         count={6} 
         speed="slow" 
@@ -24,7 +24,7 @@ export function AboutTimeline() {
         <div className="max-w-4xl mx-auto">
           <FadeIn>
             <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-              {t('ourStory', 'aboutSection')}
+              {t('ourStory')}
             </h2>
           </FadeIn>
           
@@ -37,7 +37,7 @@ export function AboutTimeline() {
               <TimelineItem 
                 year="2021"
                 title="Origins"
-                content={t('ourStoryContent', 'aboutSection')}
+                content={t('ourStoryContent')}
                 alignment="right"
                 icon="🚀"
                 delay={0}
@@ -46,7 +46,7 @@ export function AboutTimeline() {
               <TimelineItem 
                 year="2022"
                 title="Growth"
-                content={t('missionContent', 'aboutSection')}
+                content={t('missionContent')}
                 alignment="left"
                 icon="📈"
                 delay={200}
@@ -55,7 +55,7 @@ export function AboutTimeline() {
               <TimelineItem 
                 year="2023"
                 title="Innovation"
-                content={t('visionContent', 'aboutSection')}
+                content={t('visionContent')}
                 alignment="right"
                 icon="💡"
                 delay={400}
@@ -64,7 +64,7 @@ export function AboutTimeline() {
               <TimelineItem 
                 year="2024"
                 title="Global Impact"
-                content={t('valuesContent', 'aboutSection')}
+                content={t('valuesContent')}
                 alignment="left"
                 icon="🌍"
                 delay={600}

@@ -12,10 +12,10 @@ export function ProcessSection() {
   const { t, isRTL } = useLanguage();
   
   // Set up step animation triggers with inView hooks
-  const [stepOneRef, stepOneInView] = useInView({ threshold: 0.5, once: false });
-  const [stepTwoRef, stepTwoInView] = useInView({ threshold: 0.5, once: false });
-  const [stepThreeRef, stepThreeInView] = useInView({ threshold: 0.5, once: false });
-  const [stepFourRef, stepFourInView] = useInView({ threshold: 0.5, once: false });
+  const [stepOneRef, stepOneInView] = useInView<HTMLDivElement>({ threshold: 0.5, once: false });
+  const [stepTwoRef, stepTwoInView] = useInView<HTMLDivElement>({ threshold: 0.5, once: false });
+  const [stepThreeRef, stepThreeInView] = useInView<HTMLDivElement>({ threshold: 0.5, once: false });
+  const [stepFourRef, stepFourInView] = useInView<HTMLDivElement>({ threshold: 0.5, once: false });
   
   return (
     <section 

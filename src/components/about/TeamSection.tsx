@@ -16,9 +16,9 @@ export function TeamSection() {
     {
       id: 'ceo',
       image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
-      name: t('teamMembers.ceo.name', 'aboutSection'),
-      role: t('teamMembers.ceo.role', 'aboutSection'),
-      bio: t('teamMembers.ceo.bio', 'aboutSection'),
+      name: t('teamMembers.ceo.name'),
+      role: t('teamMembers.ceo.role'),
+      bio: t('teamMembers.ceo.bio'),
       socialLinks: {
         linkedin: "#",
         twitter: "#"
@@ -27,9 +27,9 @@ export function TeamSection() {
     {
       id: 'cto',
       image: "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
-      name: t('teamMembers.cto.name', 'aboutSection'),
-      role: t('teamMembers.cto.role', 'aboutSection'),
-      bio: t('teamMembers.cto.bio', 'aboutSection'),
+      name: t('teamMembers.cto.name'),
+      role: t('teamMembers.cto.role'),
+      bio: t('teamMembers.cto.bio'),
       socialLinks: {
         linkedin: "#",
         twitter: "#"
@@ -38,9 +38,9 @@ export function TeamSection() {
     {
       id: 'cpo',
       image: "https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
-      name: t('teamMembers.cpo.name', 'aboutSection'),
-      role: t('teamMembers.cpo.role', 'aboutSection'),
-      bio: t('teamMembers.cpo.bio', 'aboutSection'),
+      name: t('teamMembers.cpo.name'),
+      role: t('teamMembers.cpo.role'),
+      bio: t('teamMembers.cpo.bio'),
       socialLinks: {
         linkedin: "#",
         twitter: "#"
@@ -49,9 +49,9 @@ export function TeamSection() {
     {
       id: 'cso',
       image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?ixlib=rb-4.0.3&auto=format&fit=crop&w=256&q=80",
-      name: t('teamMembers.cso.name', 'aboutSection'),
-      role: t('teamMembers.cso.role', 'aboutSection'),
-      bio: t('teamMembers.cso.bio', 'aboutSection'),
+      name: t('teamMembers.cso.name'),
+      role: t('teamMembers.cso.role'),
+      bio: t('teamMembers.cso.bio'),
       socialLinks: {
         linkedin: "#",
         twitter: "#"
@@ -64,7 +64,7 @@ export function TeamSection() {
       <div className="container">
         <FadeIn>
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
-            {t('team', 'aboutSection')}
+            {t('team')}
           </h2>
           <p className="text-xl text-center text-muted-foreground mb-16 max-w-3xl mx-auto">
             Meet the visionaries driving our innovation and growth.

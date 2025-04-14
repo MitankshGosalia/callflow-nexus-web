@@ -7,7 +7,7 @@ import { MessageCircle, Bot, HelpCircle, Sparkles, CheckCircle } from 'lucide-re
 
 export function RegistrationGuide() {
   const { t } = useLanguage();
-  const [guideRef, inView] = useInView({ threshold: 0.1, once: true });
+  const [guideRef, inView] = useInView<HTMLDivElement>({ threshold: 0.1, once: true });
   const [activeMessage, setActiveMessage] = useState(0);
   const [showTyping, setShowTyping] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
