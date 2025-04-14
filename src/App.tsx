@@ -17,6 +17,7 @@ import Documentation from "./pages/Documentation";
 import UseCases from "./pages/UseCases";
 import Products from "./pages/Products";
 import Register from "./pages/Register";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import React from "react";
 
@@ -44,6 +45,7 @@ const App = () => {
                 <Route path="/use-cases" element={<UseCases />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

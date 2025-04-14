@@ -3,9 +3,18 @@ import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { FadeIn } from '@/components/animations/AnimatedElement';
 import { FloatingElements } from '@/components/animations/FloatingElements';
+import { Button } from '@/components/ui/button';
+import { ArrowDown } from 'lucide-react';
 
 export function AboutHero() {
   const { t } = useLanguage();
+  
+  const scrollToNextSection = () => {
+    const nextSection = document.getElementById('about-timeline');
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   
   return (
     <section className="relative py-24 overflow-hidden">
@@ -28,30 +37,25 @@ export function AboutHero() {
           <FadeIn>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                {t('title', 'aboutSection')}
+                {t('title')}
               </span>
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground mb-10">
-              {t('subtitle', 'aboutSection')}
+              {t('subtitle')}
             </p>
             
-            <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto flex items-center justify-center animate-pulse mb-12">
+            <Button 
+              onClick={scrollToNextSection}
+              variant="ghost" 
+              size="icon" 
+              className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto flex items-center justify-center animate-pulse mb-12 hover:scale-110 transition-transform"
+              aria-label="Scroll to timeline"
+            >
               <div className="w-20 h-20 rounded-full bg-background flex items-center justify-center">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-10 w-10 text-primary" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                >
-                  <path d="m6 9 6 6 6-6"/>
-                </svg>
+                <ArrowDown className="h-10 w-10 text-primary" />
               </div>
-            </div>
+            </Button>
           </FadeIn>
         </div>
       </div>
