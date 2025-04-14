@@ -61,7 +61,7 @@ export function CTASection() {
                     className="bg-white text-primary-600 hover:bg-white/90 text-lg group"
                     asChild
                   >
-                    <Link to="/pricing">
+                    <Link to="/register">
                       Start Free Trial
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Link>

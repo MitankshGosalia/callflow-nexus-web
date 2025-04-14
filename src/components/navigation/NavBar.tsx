@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Menu, X, ChevronDown, ChevronUp, LogIn, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitcher } from '@/components/navigation/ThemeSwitcher';
 import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
@@ -169,15 +169,26 @@ export function NavBar() {
           <div className="hidden md:flex items-center gap-2">
             <LanguageSwitcher />
             <ThemeSwitcher />
+            
+            {/* Login Button */}
             <Button 
-              variant="ghost" 
+              variant="outline" 
               className="text-foreground/80 hover:text-foreground"
+              size="sm"
               asChild
             >
-              <Link to="/contact">{t('contact')}</Link>
+              <Link to="/login" className="flex items-center gap-1">
+                <LogIn className="h-4 w-4" />
+                {t('login')}
+              </Link>
             </Button>
-            <Button className="bg-primary hover:bg-primary/90" asChild>
-              <Link to="/pricing">{t('getStarted')}</Link>
+            
+            {/* Register Button */}
+            <Button className="bg-primary hover:bg-primary/90" size="sm" asChild>
+              <Link to="/register" className="flex items-center gap-1">
+                <UserPlus className="h-4 w-4" />
+                {t('register')}
+              </Link>
             </Button>
           </div>
           
@@ -253,18 +264,24 @@ export function NavBar() {
           <div className="grid grid-cols-2 gap-4">
             <Button 
               variant="outline" 
-              className="w-full" 
+              className="w-full flex items-center justify-center gap-1" 
               onClick={() => setOpen(false)}
               asChild
             >
-              <Link to="/contact">{t('contact')}</Link>
+              <Link to="/login">
+                <LogIn className="h-4 w-4" />
+                {t('login')}
+              </Link>
             </Button>
             <Button 
-              className="w-full" 
+              className="w-full flex items-center justify-center gap-1" 
               onClick={() => setOpen(false)}
               asChild
             >
-              <Link to="/pricing">{t('getStarted')}</Link>
+              <Link to="/register">
+                <UserPlus className="h-4 w-4" />
+                {t('register')}
+              </Link>
             </Button>
           </div>
         </div>

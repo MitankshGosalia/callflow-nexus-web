@@ -53,7 +53,7 @@ export function HeroSection() {
           <FadeIn delay={700}>
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
               <Button size="lg" className="text-lg group" asChild>
-                <Link to="/pricing">
+                <Link to="/register">
                   {t('getStarted')}
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>

@@ -7,6 +7,7 @@ import { FadeIn } from '@/components/animations/AnimatedElement';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface PricingTierProps {
   name: string;
@@ -18,6 +19,9 @@ interface PricingTierProps {
 }
 
 const PricingTier = ({ name, price, description, features, highlight = false, buttonText = "Get Started" }: PricingTierProps) => {
+  // Determine the link target based on button text
+  const linkTarget = buttonText === "Contact Sales" ? "/contact" : "/register";
+  
   return (
     <div className={cn(
       "rounded-xl border p-6",
@@ -47,8 +51,11 @@ const PricingTier = ({ name, price, description, features, highlight = false, bu
       <Button 
         variant={highlight ? "default" : "outline"} 
         className="w-full"
+        asChild
       >
-        {buttonText}
+        <Link to={linkTarget}>
+          {buttonText}
+        </Link>
       </Button>
     </div>
   );
