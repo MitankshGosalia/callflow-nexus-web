@@ -133,37 +133,37 @@ export function FeaturesSection() {
   const features = [
     {
       icon: <Mic className="h-8 w-8 text-white" />,
-      title: t('voiceRecognition', 'featuresSection'),
-      description: t('voiceRecognitionDesc', 'featuresSection'),
-      moreInfo: t('voiceRecognitionMore', 'featuresSection'),
+      title: t('voiceRecognition'),
+      description: t('voiceRecognitionDesc'),
+      moreInfo: t('voiceRecognitionMore'),
       gradient: 'from-primary to-primary-400',
     },
     {
       icon: <Brain className="h-8 w-8 text-white" />,
-      title: t('naturalLanguage', 'featuresSection'),
-      description: t('naturalLanguageDesc', 'featuresSection'),
-      moreInfo: t('naturalLanguageMore', 'featuresSection'),
+      title: t('naturalLanguage'),
+      description: t('naturalLanguageDesc'),
+      moreInfo: t('naturalLanguageMore'),
       gradient: 'from-secondary to-secondary-400',
     },
     {
       icon: <Workflow className="h-8 w-8 text-white" />,
-      title: t('automation', 'featuresSection'),
-      description: t('automationDesc', 'featuresSection'),
-      moreInfo: t('automationMore', 'featuresSection'),
+      title: t('automation'),
+      description: t('automationDesc'),
+      moreInfo: t('automationMore'),
       gradient: 'from-accent to-accent-400',
     },
     {
       icon: <BarChart3 className="h-8 w-8 text-white" />,
-      title: t('analytics', 'featuresSection'),
-      description: t('analyticsDesc', 'featuresSection'),
-      moreInfo: t('analyticsMore', 'featuresSection'),
+      title: t('analytics'),
+      description: t('analyticsDesc'),
+      moreInfo: t('analyticsMore'),
       gradient: 'from-primary-600 to-blue-light',
     },
     {
       icon: <Shield className="h-8 w-8 text-white" />,
-      title: t('security', 'featuresSection'),
-      description: t('securityDesc', 'featuresSection'),
-      moreInfo: t('securityMore', 'featuresSection'),
+      title: t('security'),
+      description: t('securityDesc'),
+      moreInfo: t('securityMore'),
       gradient: 'from-purple-500 to-indigo-500',
     },
   ];
@@ -190,7 +190,7 @@ export function FeaturesSection() {
         <FadeIn>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-3xl md:text-4xl font-bold">
-              {t('title', 'featuresSection')}
+              {t('title')}
             </h2>
             
             <div className="flex gap-2">
@@ -214,7 +214,7 @@ export function FeaturesSection() {
           </div>
           
           <p className="text-xl text-muted-foreground mb-16 max-w-3xl">
-            {t('subtitle', 'featuresSection') || "Our AI-powered call system brings unmatched capabilities to your business communications"}
+            {t('subtitle') || "Our AI-powered call system brings unmatched capabilities to your business communications"}
           </p>
         </FadeIn>
         
