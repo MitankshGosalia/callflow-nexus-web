@@ -1,12 +1,16 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
+// Define the available languages type
+type LanguageCode = 'en' | 'es' | 'fr' | 'hi' | 'ar';
+type LanguageInfo = { code: string; name: string; flag: string };
+
 interface LanguageContextType {
   language: string;
   setLanguage: (lang: string) => void;
   t: (key: string) => string;
   isRTL: boolean;
-  availableLanguages: { code: string; name: string; flag: string }[];
+  availableLanguages: LanguageInfo[];
 }
 
 const translations = {
