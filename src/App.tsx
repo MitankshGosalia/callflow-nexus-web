@@ -16,6 +16,9 @@ import Contact from "./pages/Contact";
 import Documentation from "./pages/Documentation";
 import UseCases from "./pages/UseCases";
 import Products from "./pages/Products";
+import ProductAICallCenter from "./pages/ProductAICallCenter";
+import ProductVirtualAssistant from "./pages/ProductVirtualAssistant";
+import ProductAnalyticsSuite from "./pages/ProductAnalyticsSuite";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -44,6 +47,9 @@ const App = () => {
                 <Route path="/documentation" element={<Documentation />} />
                 <Route path="/use-cases" element={<UseCases />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/products/ai-call-center" element={<ProductAICallCenter />} />
+                <Route path="/products/virtual-assistant" element={<ProductVirtualAssistant />} />
+                <Route path="/products/analytics-suite" element={<ProductAnalyticsSuite />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<Dashboard />} />

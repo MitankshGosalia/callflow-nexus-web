@@ -54,7 +54,8 @@ const Products = () => {
         starter: "$499/mo",
         professional: "$1,499/mo",
         enterprise: "Custom"
-      }
+      },
+      pageUrl: "/products/ai-call-center"
     },
     {
       id: "virtual-assistant",
@@ -74,7 +75,8 @@ const Products = () => {
         starter: "$299/mo",
         professional: "$899/mo",
         enterprise: "Custom"
-      }
+      },
+      pageUrl: "/products/virtual-assistant"
     },
     {
       id: "analytics-suite",
@@ -94,7 +96,8 @@ const Products = () => {
         starter: "$199/mo",
         professional: "$599/mo",
         enterprise: "Custom"
-      }
+      },
+      pageUrl: "/products/analytics-suite"
     }
   ];
   
@@ -225,7 +228,7 @@ const Products = () => {
                             </Link>
                           </Button>
                           <Button variant="outline" asChild>
-                            <Link to={`/products/${product.id}`}>
+                            <Link to={product.pageUrl}>
                               Learn More
                             </Link>
                           </Button>
