@@ -16,6 +16,8 @@ import Contact from "./pages/Contact";
 import Documentation from "./pages/Documentation";
 import UseCases from "./pages/UseCases";
 import Products from "./pages/Products";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -41,6 +43,8 @@ const App = () => {
                 <Route path="/documentation" element={<Documentation />} />
                 <Route path="/use-cases" element={<UseCases />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
