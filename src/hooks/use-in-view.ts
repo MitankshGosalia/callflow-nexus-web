@@ -1,18 +1,15 @@
 
-import { useState, useEffect, useRef, RefObject } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface UseInViewOptions {
   threshold?: number;
-  rootMargin?: string;
   once?: boolean;
 }
 
-export function useInView<T extends HTMLElement = HTMLDivElement>(
-  options: UseInViewOptions = {}
-): [RefObject<T>, boolean] {
-  const { threshold = 0.1, rootMargin = '0px', once = true } = options;
+export function useInView(options: UseInViewOptions = {}) {
+  const { threshold = 0.1, once = true } = options;
   const [isInView, setIsInView] = useState(false);
-  const ref = useRef<T>(null);
+  const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const element = ref.current;
@@ -29,12 +26,15 @@ export function useInView<T extends HTMLElement = HTMLDivElement>(
           setIsInView(false);
         }
       },
-      { threshold, rootMargin }
+      { threshold }
     );
 
     observer.observe(element);
-    return () => observer.disconnect();
-  }, [threshold, rootMargin, once]);
 
-  return [ref, isInView];
+    return () => {
+      observer.disconnect();
+    };
+  }, [threshold, once]);
+
+  return [ref, isInView] as const;
 }

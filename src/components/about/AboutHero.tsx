@@ -37,12 +37,12 @@ export function AboutHero() {
           <FadeIn>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                {t('title')}
+                {t('aboutUsTitle')}
               </span>
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground mb-10">
-              {t('subtitle')}
+              {t('aboutUsSubtitle')}
             </p>
             
             <Button 
