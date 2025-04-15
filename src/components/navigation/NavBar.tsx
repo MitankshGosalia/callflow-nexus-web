@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, ChevronUp, LogIn, UserPlus, LogOut } from 'lucide-react';
@@ -31,7 +30,6 @@ export function NavBar({ isDashboard = false }) {
   const navRef = useRef<HTMLDivElement>(null);
   const mobileMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -45,33 +43,27 @@ export function NavBar({ isDashboard = false }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
-  // Set up auto-close timer for mobile menu when it's opened
   useEffect(() => {
     if (open) {
-      // Clear any existing timeout
       if (mobileMenuTimeoutRef.current) {
         clearTimeout(mobileMenuTimeoutRef.current);
       }
       
-      // Set new timeout to close menu after 20 seconds
       mobileMenuTimeoutRef.current = setTimeout(() => {
         setOpen(false);
-      }, 20000); // 20 seconds
+      }, 20000);
     } else if (mobileMenuTimeoutRef.current) {
-      // Clear timeout if menu is closed manually
       clearTimeout(mobileMenuTimeoutRef.current);
       mobileMenuTimeoutRef.current = null;
     }
     
     return () => {
-      // Clear timeout on component unmount
       if (mobileMenuTimeoutRef.current) {
         clearTimeout(mobileMenuTimeoutRef.current);
       }
     };
   }, [open]);
   
-  // Handle click outside to close mobile menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (open && navRef.current && !navRef.current.contains(event.target as Node)) {
@@ -111,11 +103,14 @@ export function NavBar({ isDashboard = false }) {
     },
     {
       name: t('resources'),
-      href: '#',
+      href: '/resources',
       subLinks: [
         { name: "Documentation", href: "/documentation" },
         { name: "Use Cases", href: "/use-cases" },
         { name: "Blog", href: "/blog" },
+        { name: "Video Tutorials", href: "/resources/videos" },
+        { name: "API Reference", href: "/resources/api" },
+        { name: "Community Forums", href: "/resources/community" }
       ]
     },
     { 
@@ -142,7 +137,6 @@ export function NavBar({ isDashboard = false }) {
       ref={navRef}
     >
       <nav className="container flex items-center justify-between">
-        {/* Logo */}
         <Link 
           to="/" 
           className="flex items-center gap-2 focus:outline-none"
@@ -157,7 +151,6 @@ export function NavBar({ isDashboard = false }) {
           </div>
         </Link>
         
-        {/* Desktop Navigation - with megamenu */}
         <div className="hidden lg:block">
           <NavigationMenu className="z-10">
             <NavigationMenuList>
@@ -207,14 +200,12 @@ export function NavBar({ isDashboard = false }) {
           </NavigationMenu>
         </div>
         
-        {/* Right side actions */}
         <div className="flex items-center gap-2">
           <div className="hidden md:flex items-center gap-2">
             <LanguageSwitcher />
             <ThemeSwitcher />
             
             {isDashboard ? (
-              // Logout Button for Dashboard
               <Button 
                 variant="destructive" 
                 size="sm"
@@ -226,7 +217,6 @@ export function NavBar({ isDashboard = false }) {
                 </Link>
               </Button>
             ) : (
-              // Login and Register Buttons for public pages
               <>
                 <Button 
                   variant="outline" 
@@ -250,7 +240,6 @@ export function NavBar({ isDashboard = false }) {
             )}
           </div>
           
-          {/* Mobile menu button */}
           <Button 
             variant="ghost" 
             size="sm" 
@@ -262,111 +251,122 @@ export function NavBar({ isDashboard = false }) {
         </div>
       </nav>
       
-      {/* Mobile Navigation */}
       <div 
         className={cn(
-          'fixed inset-0 bg-background/95 backdrop-blur-sm z-40 flex flex-col lg:hidden transition-all duration-300 pt-24 pb-6 px-6',
-          open ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full pointer-events-none'
+          'fixed inset-0 z-40 transition-all duration-300',
+          open ? 'visible' : 'invisible'
         )}
       >
-        <div className="flex flex-col space-y-1">
-          {navLinks.map((link) => (
-            <div key={link.name} className="border-b border-border">
-              {link.subLinks.length > 0 ? (
-                <div>
-                  <div className="flex items-center justify-between w-full">
-                    <Link 
-                      to={link.href}
-                      className="flex-grow text-foreground py-3"
-                      onClick={() => setOpen(false)}
-                    >
-                      {link.name}
-                    </Link>
-                    <button
-                      className="py-3 px-2"
-                      onClick={() => toggleSubMenu(link.name)}
-                    >
-                      {subMenuOpen === link.name ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                  {subMenuOpen === link.name && (
-                    <div className="pl-4 pb-2 space-y-1">
-                      {link.subLinks.map((subLink) => (
-                        <Link
-                          key={subLink.name}
-                          to={subLink.href}
-                          className="block py-2 text-foreground/80 hover:text-foreground"
-                          onClick={() => setOpen(false)}
-                        >
-                          {subLink.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  to={link.href}
-                  className="block text-foreground py-3"
-                  onClick={() => setOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              )}
-            </div>
-          ))}
-        </div>
+        <div 
+          className={cn(
+            'absolute inset-0 bg-background/95 backdrop-blur-lg transition-opacity duration-300',
+            open ? 'opacity-100' : 'opacity-0'
+          )}
+        />
         
-        <div className="mt-auto space-y-4">
-          <div className="flex items-center justify-between border-t border-border pt-4">
-            <LanguageSwitcher />
-            <ThemeSwitcher />
+        <div 
+          className={cn(
+            'relative h-full flex flex-col lg:hidden pt-24 pb-6 px-6',
+            open ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full pointer-events-none'
+          )}
+        >
+          <div className="flex flex-col space-y-1">
+            {navLinks.map((link) => (
+              <div key={link.name} className="border-b border-border">
+                {link.subLinks.length > 0 ? (
+                  <div>
+                    <div className="flex items-center justify-between w-full">
+                      <Link 
+                        to={link.href}
+                        className="flex-grow text-foreground py-3"
+                        onClick={() => setOpen(false)}
+                      >
+                        {link.name}
+                      </Link>
+                      <button
+                        className="py-3 px-2"
+                        onClick={() => toggleSubMenu(link.name)}
+                      >
+                        {subMenuOpen === link.name ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                    {subMenuOpen === link.name && (
+                      <div className="pl-4 pb-2 space-y-1">
+                        {link.subLinks.map((subLink) => (
+                          <Link
+                            key={subLink.name}
+                            to={subLink.href}
+                            className="block py-2 text-foreground/80 hover:text-foreground"
+                            onClick={() => setOpen(false)}
+                          >
+                            {subLink.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    to={link.href}
+                    className="block text-foreground py-3"
+                    onClick={() => setOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                )}
+              </div>
+            ))}
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
-            {isDashboard ? (
-              // Logout Button for Dashboard mobile view
-              <Button 
-                variant="destructive" 
-                className="w-full flex items-center justify-center gap-1 col-span-2" 
-                onClick={() => setOpen(false)}
-                asChild
-              >
-                <Link to="/">
-                  <LogOut className="h-4 w-4" />
-                  {t('logout')}
-                </Link>
-              </Button>
-            ) : (
-              // Login and Register Buttons for public pages mobile view
-              <>
+          <div className="mt-auto space-y-4">
+            <div className="flex items-center justify-between border-t border-border pt-4">
+              <LanguageSwitcher />
+              <ThemeSwitcher />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {isDashboard ? (
                 <Button 
-                  variant="outline" 
-                  className="w-full flex items-center justify-center gap-1" 
+                  variant="destructive" 
+                  className="w-full flex items-center justify-center gap-1 col-span-2" 
                   onClick={() => setOpen(false)}
                   asChild
                 >
-                  <Link to="/login">
-                    <LogIn className="h-4 w-4" />
-                    {t('login')}
+                  <Link to="/">
+                    <LogOut className="h-4 w-4" />
+                    {t('logout')}
                   </Link>
                 </Button>
-                <Button 
-                  className="w-full flex items-center justify-center gap-1" 
-                  onClick={() => setOpen(false)}
-                  asChild
-                >
-                  <Link to="/register">
-                    <UserPlus className="h-4 w-4" />
-                    {t('register')}
-                  </Link>
-                </Button>
-              </>
-            )}
+              ) : (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full flex items-center justify-center gap-1" 
+                    onClick={() => setOpen(false)}
+                    asChild
+                  >
+                    <Link to="/login">
+                      <LogIn className="h-4 w-4" />
+                      {t('login')}
+                    </Link>
+                  </Button>
+                  <Button 
+                    className="w-full flex items-center justify-center gap-1" 
+                    onClick={() => setOpen(false)}
+                    asChild
+                  >
+                    <Link to="/register">
+                      <UserPlus className="h-4 w-4" />
+                      {t('register')}
+                    </Link>
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
