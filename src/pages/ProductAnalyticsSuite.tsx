@@ -24,6 +24,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  CardDescription, // Added missing CardDescription import
+  CardFooter,
 } from "@/components/ui/card";
 import {
   Accordion,
