@@ -1,4 +1,3 @@
-
 import React from "react";
 import { NavBar } from "@/components/navigation/NavBar";
 import { Footer } from "@/components/layout/Footer";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   MessageSquare, Users, Lightbulb, Heart, ThumbsUp, 
-  MessageCircle, Calendar, User, ExternalLink
+  MessageCircle, Calendar, User, ExternalLink, Clock
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
