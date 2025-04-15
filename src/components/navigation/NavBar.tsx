@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, ChevronUp, LogIn, UserPlus, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,8 @@ export function NavBar({ isDashboard = false }) {
   const [subMenuOpen, setSubMenuOpen] = useState<string | null>(null);
   const { t, isRTL } = useLanguage();
   const location = useLocation();
+  const navRef = useRef<HTMLDivElement>(null);
+  const mobileMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // Handle scroll effect
   useEffect(() => {
@@ -42,6 +44,46 @@ export function NavBar({ isDashboard = false }) {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  
+  // Set up auto-close timer for mobile menu when it's opened
+  useEffect(() => {
+    if (open) {
+      // Clear any existing timeout
+      if (mobileMenuTimeoutRef.current) {
+        clearTimeout(mobileMenuTimeoutRef.current);
+      }
+      
+      // Set new timeout to close menu after 20 seconds
+      mobileMenuTimeoutRef.current = setTimeout(() => {
+        setOpen(false);
+      }, 20000); // 20 seconds
+    } else if (mobileMenuTimeoutRef.current) {
+      // Clear timeout if menu is closed manually
+      clearTimeout(mobileMenuTimeoutRef.current);
+      mobileMenuTimeoutRef.current = null;
+    }
+    
+    return () => {
+      // Clear timeout on component unmount
+      if (mobileMenuTimeoutRef.current) {
+        clearTimeout(mobileMenuTimeoutRef.current);
+      }
+    };
+  }, [open]);
+  
+  // Handle click outside to close mobile menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (open && navRef.current && !navRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [open]);
   
   const toggleSubMenu = (menu: string) => {
     setSubMenuOpen(subMenuOpen === menu ? null : menu);
@@ -97,6 +139,7 @@ export function NavBar({ isDashboard = false }) {
           : 'bg-transparent py-5'
       )}
       dir={isRTL ? 'rtl' : 'ltr'}
+      ref={navRef}
     >
       <nav className="container flex items-center justify-between">
         {/* Logo */}
@@ -231,17 +274,25 @@ export function NavBar({ isDashboard = false }) {
             <div key={link.name} className="border-b border-border">
               {link.subLinks.length > 0 ? (
                 <div>
-                  <button
-                    className="flex items-center justify-between w-full text-foreground py-3 text-left"
-                    onClick={() => toggleSubMenu(link.name)}
-                  >
-                    <span>{link.name}</span>
-                    {subMenuOpen === link.name ? (
-                      <ChevronUp className="h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4" />
-                    )}
-                  </button>
+                  <div className="flex items-center justify-between w-full">
+                    <Link 
+                      to={link.href}
+                      className="flex-grow text-foreground py-3"
+                      onClick={() => setOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                    <button
+                      className="py-3 px-2"
+                      onClick={() => toggleSubMenu(link.name)}
+                    >
+                      {subMenuOpen === link.name ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                   {subMenuOpen === link.name && (
                     <div className="pl-4 pb-2 space-y-1">
                       {link.subLinks.map((subLink) => (
@@ -322,4 +373,3 @@ export function NavBar({ isDashboard = false }) {
     </header>
   );
 }
-
