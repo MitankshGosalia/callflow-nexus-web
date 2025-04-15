@@ -6,9 +6,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { FadeIn, ScaleIn } from '@/components/animations/AnimatedElement';
 import { Button } from '@/components/ui/button';
 import { 
-  CheckCircle, ArrowRight, Phone, Headphones, 
-  Bot, BarChart, MessageSquare, Layers, Shield, 
-  Globe, HelpCircle, Settings, Users, LayoutGrid
+  CheckCircle, ArrowRight, Layers, 
+  Bot, BarChart, MessageSquare, 
+  Globe, HelpCircle, Settings, Users, LayoutGrid, 
+  Sparkles, Shield, Workflow, Brain, LineChart
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
@@ -37,91 +38,97 @@ const Products = () => {
   // Product data
   const products = [
     {
-      id: "ai-call-center",
-      name: "AI Call Center",
-      icon: <Phone className="h-6 w-6" />,
-      description: "Complete call center solution powered by advanced AI for handling customer inquiries, routing calls, and providing 24/7 support.",
+      id: "security",
+      name: "Enterprise Security",
+      icon: <Shield className="h-6 w-6" />,
+      description: "Advanced security features to protect your business data with state-of-the-art encryption, access controls, and security monitoring.",
       features: [
-        "Intelligent call routing",
-        "24/7 availability",
-        "Multilingual support",
-        "Real-time transcription",
-        "Sentiment analysis",
-        "CRM integration",
-        "Custom voice creation"
-      ],
-      pricing: {
-        starter: "$499/mo",
-        professional: "$1,499/mo",
-        enterprise: "Custom"
-      },
-      pageUrl: "/products/ai-call-center"
-    },
-    {
-      id: "virtual-assistant",
-      name: "Virtual Assistant Platform",
-      icon: <Bot className="h-6 w-6" />,
-      description: "Highly customizable virtual assistants that can be trained on your business data to provide personalized customer support.",
-      features: [
-        "Knowledge base integration",
-        "Custom conversation flows",
-        "Personalization options",
-        "Multi-channel deployment",
-        "Context-aware responses",
-        "Interactive voice response",
-        "Self-learning capabilities"
+        "End-to-end encryption",
+        "Advanced access control",
+        "Security auditing",
+        "Breach detection",
+        "Compliance monitoring",
+        "DDoS protection",
+        "Secure authentication"
       ],
       pricing: {
         starter: "$299/mo",
         professional: "$899/mo",
         enterprise: "Custom"
       },
-      pageUrl: "/products/virtual-assistant"
+      pageUrl: "/products#security"
     },
     {
-      id: "analytics-suite",
-      name: "Conversation Analytics Suite",
-      icon: <BarChart className="h-6 w-6" />,
-      description: "Powerful analytics platform that provides insights into customer interactions, sentiment trends, and business opportunities.",
+      id: "ai-workflow",
+      name: "AI Workflow Automation",
+      icon: <Workflow className="h-6 w-6" />,
+      description: "Automate complex business processes with AI-powered workflows that learn and adapt to your company's specific needs.",
       features: [
-        "Real-time dashboards",
-        "Custom reporting",
-        "Trend analysis",
-        "Call quality metrics",
-        "Conversion tracking",
-        "Agent performance monitoring",
-        "AI-powered recommendations"
+        "Intelligent task routing",
+        "Process optimization",
+        "Custom workflow builder",
+        "Integration ecosystem",
+        "Performance analytics",
+        "Decision automation",
+        "AI recommendations"
       ],
       pricing: {
         starter: "$199/mo",
         professional: "$599/mo",
         enterprise: "Custom"
       },
-      pageUrl: "/products/analytics-suite"
+      pageUrl: "/products#ai-workflow"
+    },
+    {
+      id: "nlp",
+      name: "Natural Language Processing",
+      icon: <Brain className="h-6 w-6" />,
+      description: "Harness the power of advanced natural language processing to understand customer intent, sentiment, and needs across all communication channels.",
+      features: [
+        "Sentiment analysis",
+        "Intent recognition",
+        "Entity extraction",
+        "Language detection",
+        "Custom NLP models",
+        "Multilingual support",
+        "Contextual understanding"
+      ],
+      pricing: {
+        starter: "$349/mo",
+        professional: "$999/mo",
+        enterprise: "Custom"
+      },
+      pageUrl: "/products#nlp"
     }
+  ];
+  
+  // Integration platforms
+  const integrationPlatforms = [
+    "Salesforce", "HubSpot", "Zendesk", "Zoom", "Slack", "Microsoft Teams", 
+    "Shopify", "Twilio", "AWS", "Google Cloud", "Azure", "Zapier"
   ];
   
   // FAQ data
   const faqs = [
     {
-      question: "How quickly can we implement your AI call system?",
-      answer: "Our standard implementation takes 2-4 weeks depending on the complexity of your requirements. This includes initial setup, training the AI on your business data, integration with existing systems, and testing. For simpler use cases, we offer a quick-start option that can be operational within one week."
+      question: "How can these products integrate with my existing systems?",
+      answer: "Our products feature robust API integration capabilities for seamless connection with CRM systems, e-commerce platforms, ticketing systems, and custom databases. We provide pre-built integrations for popular platforms like Salesforce, Zendesk, and more, plus custom integration services for proprietary systems."
     },
     {
-      question: "Can the AI handle multiple languages?",
-      answer: "Yes, our AI call system supports over 30 languages with native-level proficiency in English, Spanish, French, German, Japanese, Mandarin, Arabic, and Hindi. Additional languages can be added upon request."
+      question: "Do you offer customization for enterprise needs?",
+      answer: "Yes, all our products can be tailored to meet specific enterprise requirements. Our professional services team works closely with enterprise clients to understand their unique needs and configure the platform accordingly, ensuring optimal performance and alignment with business processes."
     },
     {
-      question: "How do you ensure data security and compliance?",
-      answer: "We implement bank-level encryption for all data, both in transit and at rest. Our platform is compliant with GDPR, HIPAA, SOC 2, and PCI DSS standards. We also offer data residency options for organizations with specific geographic requirements."
+      question: "What kind of support is included with your products?",
+      answer: "All plans include standard support with email and documentation access. Professional and Enterprise plans include priority support with guaranteed response times, dedicated account managers, and regular check-ins. Enterprise clients also receive 24/7 emergency support and custom SLAs."
     },
     {
-      question: "Can the AI transfer calls to human agents when necessary?",
-      answer: "Absolutely. Our system is designed to seamlessly hand off conversations to human agents when needed. The AI can detect complex issues, emotional situations, or specific customer requests that require human intervention, and will transfer the call along with all context and conversation history."
+      question: "How secure are your products?",
+      answer: "Security is our top priority. We implement bank-level encryption for all data, both in transit and at rest. Our platform is compliant with GDPR, HIPAA, SOC 2, and PCI DSS standards. We regularly undergo third-party security audits and penetration testing to ensure the highest security standards."
     },
     {
-      question: "What kind of reporting and analytics do you provide?",
-      answer: "Our platform includes comprehensive analytics covering call volumes, resolution rates, customer sentiment, popular topics, peak times, and conversion metrics. All analytics are available through customizable dashboards and can be exported or accessed via API."
+      question: "Can I try your products before purchasing?",
+      answer: "Absolutely! We offer free trials for all our products so you can experience their value firsthand. Enterprise customers can also request a personalized proof of concept tailored to their specific use case and requirements."
     }
   ];
   
@@ -170,6 +177,23 @@ const Products = () => {
                   </Button>
                 </div>
               </FadeIn>
+              
+              <FadeIn delay={400}>
+                <div className="flex justify-center gap-4 mt-8 flex-wrap">
+                  <Link to="/products/ai-call-center" className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors">
+                    AI Call Center
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                  <Link to="/products/virtual-assistant" className="inline-flex items-center px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20 text-secondary hover:bg-secondary/20 transition-colors">
+                    Virtual Assistant
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                  <Link to="/products/analytics-suite" className="inline-flex items-center px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-accent hover:bg-accent/20 transition-colors">
+                    Analytics Suite
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+              </FadeIn>
             </div>
           </div>
         </section>
@@ -178,10 +202,10 @@ const Products = () => {
         <section className="py-12 bg-muted/30">
           <div className="container">
             <FadeIn>
-              <h2 className="text-3xl font-bold mb-10 text-center">Our Product Suite</h2>
+              <h2 className="text-3xl font-bold mb-10 text-center">Our Enterprise Solutions</h2>
             </FadeIn>
             
-            <Tabs defaultValue="ai-call-center" className="w-full">
+            <Tabs defaultValue="security" className="w-full">
               <div className="mb-8">
                 <TabsList className="grid w-full grid-cols-3">
                   {products.map((product) => (
@@ -285,8 +309,71 @@ const Products = () => {
           </div>
         </section>
         
-        {/* Integration Ecosystem */}
+        {/* Feature showcase with animations */}
         <section className="py-16">
+          <div className="container">
+            <FadeIn>
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold mb-4">Cutting-Edge Technology</h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  Our platform leverages the latest advancements in artificial intelligence and machine learning
+                </p>
+              </div>
+            </FadeIn>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  title: "Smart Recommendations",
+                  description: "AI-powered suggestions based on customer behavior and preferences",
+                  icon: <Sparkles className="h-10 w-10" />,
+                  color: "from-blue-500 to-purple-600"
+                },
+                {
+                  title: "Predictive Analytics",
+                  description: "Forecast trends and customer needs before they emerge",
+                  icon: <LineChart className="h-10 w-10" />,
+                  color: "from-green-500 to-emerald-600"
+                },
+                {
+                  title: "Behavioral Analysis",
+                  description: "Deep insights into customer behavior patterns and preferences",
+                  icon: <Users className="h-10 w-10" />,
+                  color: "from-orange-500 to-amber-600"
+                },
+                {
+                  title: "Continuous Learning",
+                  description: "Systems that improve over time with each customer interaction",
+                  icon: <Brain className="h-10 w-10" />,
+                  color: "from-red-500 to-pink-600"
+                }
+              ].map((feature, index) => (
+                <ScaleIn key={index} delay={index * 100}>
+                  <div className="bg-card border rounded-xl p-6 h-full hover:shadow-lg transition-shadow overflow-hidden relative group">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
+                    
+                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      {React.cloneElement(feature.icon, { className: "h-8 w-8 text-primary" })}
+                    </div>
+                    
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
+                    <p className="text-muted-foreground">{feature.description}</p>
+                    
+                    <div className="mt-6 pt-4 border-t border-border opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Link to="/features" className="inline-flex items-center text-primary text-sm">
+                        Learn more
+                        <ArrowRight className="ml-1 h-3 w-3" />
+                      </Link>
+                    </div>
+                  </div>
+                </ScaleIn>
+              ))}
+            </div>
+          </div>
+        </section>
+        
+        {/* Integration Ecosystem */}
+        <section className="py-16 bg-muted/30">
           <div className="container">
             <FadeIn>
               <div className="text-center mb-12">
@@ -298,37 +385,24 @@ const Products = () => {
             </FadeIn>
             
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              {[
-                { name: "Salesforce", icon: <Layers className="h-8 w-8" /> },
-                { name: "HubSpot", icon: <Users className="h-8 w-8" /> },
-                { name: "Zendesk", icon: <Headphones className="h-8 w-8" /> },
-                { name: "Zoom", icon: <MessageSquare className="h-8 w-8" /> },
-                { name: "Slack", icon: <MessageSquare className="h-8 w-8" /> },
-                { name: "Microsoft Teams", icon: <Users className="h-8 w-8" /> },
-                { name: "Shopify", icon: <ShoppingBag className="h-8 w-8" /> },
-                { name: "Twilio", icon: <Phone className="h-8 w-8" /> },
-                { name: "Zapier", icon: <Workflow className="h-8 w-8" /> },
-                { name: "AWS", icon: <Cloud className="h-8 w-8" /> },
-                { name: "Google Cloud", icon: <Cloud className="h-8 w-8" /> },
-                { name: "Azure", icon: <Cloud className="h-8 w-8" /> }
-              ].map((integration, index) => (
+              {integrationPlatforms.map((platform, index) => (
                 <HoverCard key={index}>
                   <HoverCardTrigger asChild>
                     <div className="bg-card border rounded-lg p-4 h-24 flex flex-col items-center justify-center cursor-pointer hover-lift">
                       <ScaleIn>
                         <div className="text-primary mb-2">
-                          {React.cloneElement(integration.icon, { className: "h-8 w-8 mx-auto text-primary" })}
+                          <Layers className="h-8 w-8 mx-auto text-primary" />
                         </div>
-                        <p className="font-medium text-sm text-center">{integration.name}</p>
+                        <p className="font-medium text-sm text-center">{platform}</p>
                       </ScaleIn>
                     </div>
                   </HoverCardTrigger>
                   <HoverCardContent className="w-80">
                     <div className="flex justify-between space-x-4">
                       <div>
-                        <h4 className="text-sm font-semibold">{integration.name} Integration</h4>
+                        <h4 className="text-sm font-semibold">{platform} Integration</h4>
                         <p className="text-sm text-muted-foreground">
-                          Seamlessly connect your {integration.name} account for enhanced workflow and data synchronization.
+                          Seamlessly connect your {platform} account for enhanced workflow and data synchronization.
                         </p>
                         <div className="flex items-center pt-2">
                           <Link 
@@ -348,7 +422,7 @@ const Products = () => {
         </section>
         
         {/* FAQ Section */}
-        <section className="py-16 bg-muted/30">
+        <section className="py-16">
           <div className="container max-w-4xl">
             <FadeIn>
               <div className="text-center mb-12">
@@ -387,7 +461,7 @@ const Products = () => {
         </section>
         
         {/* Testimonials */}
-        <section className="py-16">
+        <section className="py-16 bg-muted/30">
           <div className="container">
             <FadeIn>
               <div className="text-center mb-12">
@@ -480,56 +554,5 @@ const Products = () => {
   );
 };
 
-// Missing imports
-const ShoppingBag = (props: any) => (
-  <svg 
-    {...props}
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-    <path d="M3 6h18"></path>
-    <path d="M16 10a4 4 0 0 1-8 0"></path>
-  </svg>
-);
-
-const Workflow = (props: any) => (
-  <svg 
-    {...props}
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <rect x="3" y="3" width="6" height="6" rx="1"></rect>
-    <rect x="15" y="3" width="6" height="6" rx="1"></rect>
-    <rect x="3" y="15" width="6" height="6" rx="1"></rect>
-    <path d="M15 8v4h4"></path>
-    <path d="M18 15a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
-  </svg>
-);
-
-const Cloud = (props: any) => (
-  <svg 
-    {...props}
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
-  </svg>
-);
-
 export default Products;
+

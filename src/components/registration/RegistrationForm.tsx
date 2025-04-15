@@ -1,457 +1,559 @@
+
 import React, { useState } from 'react';
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useLanguage } from '@/contexts/LanguageContext';
-import { Building2, Mail, User, Lock, KeyRound, Users, ArrowRight, Briefcase, Globe, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useInView } from '@/hooks/use-in-view';
-import { cn } from '@/lib/utils';
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "@/hooks/use-toast";
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { FadeIn, ScaleIn } from '@/components/animations/AnimatedElement';
+import { 
+  AtSign, Lock, Building, Phone, Globe, 
+  Info, MapPin, Users, CheckCircle, User,
+  FileText, Briefcase, Settings, ArrowRight,
+  Image, Upload, MessageCircle
+} from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-interface Employee {
-  email: string;
-  password: string;
-  name: string;
-  role: string;
-}
-
-const formSchema = z.object({
-  businessName: z.string().min(2, "Business name must be at least 2 characters."),
-  businessAddress: z.string().min(5, "Address must be at least 5 characters."),
-  businessWebsite: z.string().url("Please enter a valid URL.").optional().or(z.literal('')),
-  businessPhone: z.string().min(8, "Phone number must be at least 8 digits."),
-  businessDescription: z.string().min(10, "Description must be at least 10 characters."),
-  industry: z.string().min(2, "Please select an industry."),
-  adminName: z.string().min(2, "Admin name must be at least 2 characters."),
-  adminEmail: z.string().email("Please enter a valid email address."),
-  adminPassword: z.string().min(8, "Password must be at least 8 characters."),
-  confirmPassword: z.string().min(8, "Password must be at least 8 characters.")
-}).refine((data) => data.adminPassword === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
-interface RegistrationFormProps {
+type RegistrationFormProps = {
   onSuccess: () => void;
 }
 
-export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
+export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
   const { t } = useLanguage();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [newEmployee, setNewEmployee] = useState<Employee>({ email: '', password: '', name: '', role: '' });
-  const [formRef, inView] = useInView<HTMLDivElement>({ threshold: 0.1, once: true });
+  const [activeTab, setActiveTab] = useState('business');
+  const [loading, setLoading] = useState(false);
   
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      businessName: "",
-      businessAddress: "",
-      businessWebsite: "",
-      businessPhone: "",
-      businessDescription: "",
-      industry: "",
-      adminName: "",
-      adminEmail: "",
-      adminPassword: "",
-      confirmPassword: ""
-    },
-  });
-
-  const nextStep = () => {
-    const currentFields = [
-      ['businessName', 'businessAddress', 'businessWebsite', 'businessPhone', 'businessDescription', 'industry'],
-      ['adminName', 'adminEmail', 'adminPassword', 'confirmPassword']
-    ][currentStep - 1];
+  // Form states for business details
+  const [businessName, setBusinessName] = useState('');
+  const [businessEmail, setBusinessEmail] = useState('');
+  const [businessPhone, setBusinessPhone] = useState('');
+  const [businessAddress, setBusinessAddress] = useState('');
+  const [businessCity, setBusinessCity] = useState('');
+  const [businessState, setBusinessState] = useState('');
+  const [businessZip, setBusinessZip] = useState('');
+  const [businessWebsite, setBusinessWebsite] = useState('');
+  const [businessIndustry, setBusinessIndustry] = useState('');
+  const [businessSize, setBusinessSize] = useState('');
+  const [businessDescription, setBusinessDescription] = useState('');
+  
+  // Form states for admin account
+  const [adminName, setAdminName] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+  const [adminConfirmPassword, setAdminConfirmPassword] = useState('');
+  const [adminTitle, setAdminTitle] = useState('');
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
     
-    form.trigger(currentFields as any).then(isValid => {
-      if (isValid) {
-        setCurrentStep(prev => Math.min(prev + 1, 3));
-      }
-    });
+    // Simulate registration
+    setTimeout(() => {
+      setLoading(false);
+      onSuccess();
+    }, 2000);
   };
-
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
-
-  const handleAddEmployee = () => {
-    if (newEmployee.email && newEmployee.password && newEmployee.name) {
-      setEmployees([...employees, { ...newEmployee }]);
-      setNewEmployee({ email: '', password: '', name: '', role: '' });
-      toast({ description: "Employee added successfully" });
+  
+  const nextStep = () => {
+    if (activeTab === 'business') {
+      setActiveTab('admin');
+    } else if (activeTab === 'admin') {
+      setActiveTab('confirmation');
     }
   };
-
-  const handleRemoveEmployee = (index: number) => {
-    const updatedEmployees = employees.filter((_, i) => i !== index);
-    setEmployees(updatedEmployees);
-    toast({ description: "Employee removed" });
+  
+  const prevStep = () => {
+    if (activeTab === 'admin') {
+      setActiveTab('business');
+    } else if (activeTab === 'confirmation') {
+      setActiveTab('admin');
+    }
   };
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("Form values:", values);
-    console.log("Employees:", employees);
-    
-    setTimeout(() => {
-      onSuccess();
-    }, 1500);
-  };
-
+  
+  const industries = [
+    'Technology',
+    'Healthcare',
+    'Finance',
+    'Education',
+    'Manufacturing',
+    'Retail',
+    'Hospitality',
+    'Real Estate',
+    'Transportation',
+    'Construction',
+    'Entertainment',
+    'Agriculture',
+    'Energy',
+    'Other'
+  ];
+  
+  const businessSizes = [
+    '1-10 employees',
+    '11-50 employees',
+    '51-200 employees',
+    '201-500 employees',
+    '501-1000 employees',
+    '1000+ employees'
+  ];
+  
   return (
-    <Card 
-      ref={formRef} 
-      className={cn(
-        "w-full shadow-lg border-2 border-primary/20",
-        inView ? "animate-scale-in" : "opacity-0"
-      )}
-    >
-      <CardHeader className="space-y-2 bg-primary/5 border-b border-primary/10">
-        <CardTitle className="text-2xl md:text-3xl font-bold text-center">
-          {t('businessRegistration')}
-        </CardTitle>
-        <CardDescription className="text-center">
-          {t('registrationDescription')}
-        </CardDescription>
+    <form onSubmit={handleSubmit}>
+      <Card className="border-primary/20 shadow-lg">
+        <CardHeader className="space-y-1">
+          <CardTitle>{t('registerYourBusiness')}</CardTitle>
+          <CardDescription>{t('completeRegistrationBelow')}</CardDescription>
+        </CardHeader>
         
-        <div className="w-full mt-6">
-          <div className="flex justify-between">
-            {[1, 2, 3].map((step) => (
-              <div 
-                key={step}
-                className={cn(
-                  "flex flex-col items-center", 
-                  { "opacity-100": step <= currentStep, "opacity-50": step > currentStep }
-                )}
-              >
-                <div 
-                  className={cn(
-                    "w-10 h-10 flex items-center justify-center rounded-full text-white font-medium transition-all",
-                    { "bg-primary": step <= currentStep, "bg-muted": step > currentStep }
-                  )}
-                >
-                  {step}
-                </div>
-                <span className="text-xs mt-1">
-                  {step === 1 ? t('businessDetails') : 
-                   step === 2 ? t('adminAccount') : 
-                   t('employeeAccess')}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="h-1 w-full bg-muted mt-4 rounded-full">
-            <div 
-              className="h-1 bg-primary rounded-full transition-all"
-              style={{ width: `${(currentStep - 1) / 2 * 100}%` }}
-            ></div>
-          </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="pt-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {currentStep === 1 && (
-              <div className="space-y-4 animate-fade-in">
-                <FormField
-                  control={form.control}
-                  name="businessName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4" /> {t('businessName')}
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder={t('enterBusinessName')} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="industry"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2">
-                        <Briefcase className="h-4 w-4" /> {t('industry')}
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder={t('enterIndustry')} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="businessAddress"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {t('businessAddress')}
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea placeholder={t('enterAddress')} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="businessPhone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <Phone className="h-4 w-4" /> {t('phoneNumber')}
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder={t('enterPhone')} type="tel" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="businessWebsite"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <Globe className="h-4 w-4" /> {t('website')} ({t('optional')})
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://yourcompany.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
-                <FormField
-                  control={form.control}
-                  name="businessDescription"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('businessDescription')}</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder={t('describeYourBusiness')} rows={3} {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        {t('briefDescriptionBusiness')}
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            )}
-
-            {currentStep === 2 && (
-              <div className="space-y-4 animate-fade-in">
-                <FormField
-                  control={form.control}
-                  name="adminName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2">
-                        <User className="h-4 w-4" /> {t('adminName')}
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder={t('enterFullName')} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="adminEmail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" /> {t('adminEmail')}
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="admin@yourcompany.com" type="email" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        {t('thisWillBeUsername')}
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="adminPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <Lock className="h-4 w-4" /> {t('password')}
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder={t('enterPassword')} type="password" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <KeyRound className="h-4 w-4" /> {t('confirmPassword')}
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder={t('confirmPassword')} type="password" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-            )}
-
-            {currentStep === 3 && (
-              <div className="space-y-6 animate-fade-in">
-                <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
-                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                    <Users className="h-5 w-5" /> {t('addEmployeeAccounts')}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    {t('employeeAccountsDescription')}
-                  </p>
-                  
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-3">
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid grid-cols-3 mb-8">
+              <TabsTrigger value="business" className="flex items-center gap-2">
+                <Building className="h-4 w-4" /> Business
+              </TabsTrigger>
+              <TabsTrigger value="admin" className="flex items-center gap-2">
+                <User className="h-4 w-4" /> Admin Account
+              </TabsTrigger>
+              <TabsTrigger value="confirmation" className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4" /> Confirmation
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Business Details Tab */}
+            <TabsContent value="business" className="space-y-6">
+              <FadeIn>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="business-name" className="flex items-center gap-2">
+                        <Building className="h-4 w-4" /> Business Name
+                      </Label>
                       <Input 
-                        placeholder={t('employeeName')}
-                        value={newEmployee.name}
-                        onChange={(e) => setNewEmployee({...newEmployee, name: e.target.value})}
-                      />
-                      <Input 
-                        placeholder={t('employeeRole')}
-                        value={newEmployee.role}
-                        onChange={(e) => setNewEmployee({...newEmployee, role: e.target.value})}
+                        id="business-name" 
+                        placeholder="Acme Corporation" 
+                        value={businessName}
+                        onChange={(e) => setBusinessName(e.target.value)}
+                        required 
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="business-industry" className="flex items-center gap-2">
+                        <Briefcase className="h-4 w-4" /> Industry
+                      </Label>
+                      <Select value={businessIndustry} onValueChange={setBusinessIndustry}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select industry" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {industries.map((industry) => (
+                            <SelectItem key={industry} value={industry}>
+                              {industry}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="business-email" className="flex items-center gap-2">
+                        <AtSign className="h-4 w-4" /> Business Email
+                      </Label>
                       <Input 
-                        type="email"
-                        placeholder={t('employeeEmail')}
-                        value={newEmployee.email}
-                        onChange={(e) => setNewEmployee({...newEmployee, email: e.target.value})}
-                      />
-                      <Input 
-                        type="password"
-                        placeholder={t('temporaryPassword')}
-                        value={newEmployee.password}
-                        onChange={(e) => setNewEmployee({...newEmployee, password: e.target.value})}
+                        id="business-email" 
+                        type="email" 
+                        placeholder="info@acmecorp.com" 
+                        value={businessEmail}
+                        onChange={(e) => setBusinessEmail(e.target.value)}
+                        required 
                       />
                     </div>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full" 
-                      onClick={handleAddEmployee}
-                    >
-                      {t('addEmployee')}
-                    </Button>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="business-phone" className="flex items-center gap-2">
+                        <Phone className="h-4 w-4" /> Business Phone
+                      </Label>
+                      <Input 
+                        id="business-phone" 
+                        placeholder="(555) 123-4567" 
+                        value={businessPhone}
+                        onChange={(e) => setBusinessPhone(e.target.value)}
+                        required 
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="business-address" className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" /> Street Address
+                    </Label>
+                    <Input 
+                      id="business-address" 
+                      placeholder="123 Main Street" 
+                      value={businessAddress}
+                      onChange={(e) => setBusinessAddress(e.target.value)}
+                      required 
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="business-city">City</Label>
+                      <Input 
+                        id="business-city" 
+                        placeholder="New York" 
+                        value={businessCity}
+                        onChange={(e) => setBusinessCity(e.target.value)}
+                        required 
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="business-state">State/Province</Label>
+                      <Input 
+                        id="business-state" 
+                        placeholder="NY" 
+                        value={businessState}
+                        onChange={(e) => setBusinessState(e.target.value)}
+                        required 
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 col-span-full md:col-span-1">
+                      <Label htmlFor="business-zip">ZIP/Postal Code</Label>
+                      <Input 
+                        id="business-zip" 
+                        placeholder="10001" 
+                        value={businessZip}
+                        onChange={(e) => setBusinessZip(e.target.value)}
+                        required 
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="business-website" className="flex items-center gap-2">
+                        <Globe className="h-4 w-4" /> Website
+                      </Label>
+                      <Input 
+                        id="business-website" 
+                        placeholder="https://www.acmecorp.com" 
+                        value={businessWebsite}
+                        onChange={(e) => setBusinessWebsite(e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="business-size" className="flex items-center gap-2">
+                        <Users className="h-4 w-4" /> Company Size
+                      </Label>
+                      <Select value={businessSize} onValueChange={setBusinessSize}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select size" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {businessSizes.map((size) => (
+                            <SelectItem key={size} value={size}>
+                              {size}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="business-description" className="flex items-center gap-2">
+                      <Info className="h-4 w-4" /> Business Description
+                    </Label>
+                    <Textarea 
+                      id="business-description" 
+                      placeholder="Tell us about your business..." 
+                      className="min-h-[100px]"
+                      value={businessDescription}
+                      onChange={(e) => setBusinessDescription(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 border-t pt-6">
+                    <Label className="flex items-center gap-2">
+                      <Image className="h-4 w-4" /> Business Logo (Optional)
+                    </Label>
+                    <div className="border-2 border-dashed rounded-md p-6 text-center cursor-pointer hover:border-primary/50 transition-colors">
+                      <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        Drop your logo here or <span className="text-primary">browse files</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Recommended size: 512x512px. Max 2MB.
+                      </p>
+                    </div>
                   </div>
                 </div>
-                
-                <div>
-                  <h4 className="text-md font-medium mb-2">
-                    {t('addedEmployees')} ({employees.length})
-                  </h4>
-                  
-                  {employees.length === 0 ? (
-                    <div className="text-center py-4 bg-muted/50 rounded-lg">
-                      <p className="text-muted-foreground">{t('noEmployeesAdded')}</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {employees.map((emp, index) => (
-                        <div 
-                          key={index} 
-                          className="flex items-center justify-between bg-muted/30 p-3 rounded-md"
-                        >
-                          <div>
-                            <p className="font-medium">{emp.name}</p>
-                            <div className="flex items-center gap-4">
-                              <p className="text-sm text-muted-foreground">{emp.email}</p>
-                              <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">
-                                {emp.role || t('employee')}
-                              </span>
-                            </div>
-                          </div>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-destructive hover:text-destructive/90"
-                            onClick={() => handleRemoveEmployee(index)}
-                          >
-                            {t('remove')}
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            <div className="pt-4 border-t flex justify-between">
-              {currentStep > 1 ? (
-                <Button type="button" variant="outline" onClick={prevStep}>
-                  {t('previous')}
-                </Button>
-              ) : (
-                <div></div>
-              )}
+              </FadeIn>
               
-              {currentStep < 3 ? (
-                <Button type="button" onClick={nextStep} className="gap-2">
-                  {t('next')} <ArrowRight className="h-4 w-4" />
+              <Button 
+                type="button"
+                className="w-full"
+                onClick={nextStep}
+              >
+                Continue to Admin Setup
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </TabsContent>
+            
+            {/* Admin Account Tab */}
+            <TabsContent value="admin" className="space-y-6">
+              <FadeIn>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="admin-name" className="flex items-center gap-2">
+                        <User className="h-4 w-4" /> Full Name
+                      </Label>
+                      <Input 
+                        id="admin-name" 
+                        placeholder="John Doe" 
+                        value={adminName}
+                        onChange={(e) => setAdminName(e.target.value)}
+                        required 
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="admin-title" className="flex items-center gap-2">
+                        <Briefcase className="h-4 w-4" /> Job Title
+                      </Label>
+                      <Input 
+                        id="admin-title" 
+                        placeholder="CEO / Manager / Owner" 
+                        value={adminTitle}
+                        onChange={(e) => setAdminTitle(e.target.value)}
+                        required 
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="admin-email" className="flex items-center gap-2">
+                      <AtSign className="h-4 w-4" /> Admin Email
+                    </Label>
+                    <Input 
+                      id="admin-email" 
+                      type="email" 
+                      placeholder="john.doe@acmecorp.com" 
+                      value={adminEmail}
+                      onChange={(e) => setAdminEmail(e.target.value)}
+                      required 
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      This email will be used for logging in as an administrator.
+                    </p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="admin-password" className="flex items-center gap-2">
+                        <Lock className="h-4 w-4" /> Password
+                      </Label>
+                      <Input 
+                        id="admin-password" 
+                        type="password" 
+                        value={adminPassword}
+                        onChange={(e) => setAdminPassword(e.target.value)}
+                        required 
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="admin-confirm-password" className="flex items-center gap-2">
+                        <Lock className="h-4 w-4" /> Confirm Password
+                      </Label>
+                      <Input 
+                        id="admin-confirm-password" 
+                        type="password" 
+                        value={adminConfirmPassword}
+                        onChange={(e) => setAdminConfirmPassword(e.target.value)}
+                        required 
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 border rounded-md bg-muted/30 space-y-3">
+                    <h4 className="font-medium flex items-center gap-2">
+                      <Settings className="h-4 w-4" /> Administrator Privileges
+                    </h4>
+                    <ul className="text-sm space-y-2">
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-3 w-3 text-green-500" /> Access to all system settings
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-3 w-3 text-green-500" /> User and employee management
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-3 w-3 text-green-500" /> Billing and subscription controls
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-3 w-3 text-green-500" /> Analytics and reporting
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <CheckCircle className="h-3 w-3 text-green-500" /> API integrations and webhooks
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </FadeIn>
+              
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button 
+                  type="button"
+                  variant="outline"
+                  onClick={prevStep}
+                  className="sm:flex-1"
+                >
+                  Back to Business
                 </Button>
-              ) : (
-                <Button type="submit" className="gap-2">
-                  {t('completeRegistration')}
+                <Button 
+                  type="button"
+                  onClick={nextStep}
+                  className="sm:flex-1"
+                >
+                  Continue
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              )}
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              </div>
+            </TabsContent>
+            
+            {/* Confirmation Tab */}
+            <TabsContent value="confirmation" className="space-y-6">
+              <FadeIn>
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                      <CheckCircle className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-2xl font-bold">{t('almostDone')}</h3>
+                    <p className="text-muted-foreground mt-2">
+                      Please review your information before submitting
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="border rounded-md p-4">
+                      <h4 className="font-medium flex items-center gap-2 mb-3">
+                        <Building className="h-4 w-4" /> Business Information
+                      </h4>
+                      
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground">Name</p>
+                          <p className="font-medium">{businessName || 'Not provided'}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground">Industry</p>
+                          <p className="font-medium">{businessIndustry || 'Not provided'}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground">Email</p>
+                          <p className="font-medium">{businessEmail || 'Not provided'}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground">Phone</p>
+                          <p className="font-medium">{businessPhone || 'Not provided'}</p>
+                        </div>
+                        <div className="col-span-2 space-y-1">
+                          <p className="text-muted-foreground">Address</p>
+                          <p className="font-medium">
+                            {[businessAddress, businessCity, businessState, businessZip]
+                              .filter(Boolean)
+                              .join(', ') || 'Not provided'}
+                          </p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground">Website</p>
+                          <p className="font-medium">{businessWebsite || 'Not provided'}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground">Size</p>
+                          <p className="font-medium">{businessSize || 'Not provided'}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="border rounded-md p-4">
+                      <h4 className="font-medium flex items-center gap-2 mb-3">
+                        <User className="h-4 w-4" /> Administrator Account
+                      </h4>
+                      
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground">Name</p>
+                          <p className="font-medium">{adminName || 'Not provided'}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground">Title</p>
+                          <p className="font-medium">{adminTitle || 'Not provided'}</p>
+                        </div>
+                        <div className="col-span-2 space-y-1">
+                          <p className="text-muted-foreground">Email</p>
+                          <p className="font-medium">{adminEmail || 'Not provided'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 border rounded-md bg-muted/30">
+                    <h4 className="font-medium flex items-center gap-2">
+                      <FileText className="h-4 w-4" /> Terms and Agreement
+                    </h4>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      By clicking "Complete Registration", you agree to our Terms of Service and Privacy Policy.
+                      You also agree to receive notifications and marketing communications.
+                    </p>
+                  </div>
+                </div>
+              </FadeIn>
+              
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button 
+                  type="button"
+                  variant="outline"
+                  onClick={prevStep}
+                  className="sm:flex-1"
+                >
+                  Back to Admin
+                </Button>
+                <Button 
+                  type="submit" 
+                  className="sm:flex-1"
+                  disabled={loading}
+                >
+                  {loading ? 'Registering...' : 'Complete Registration'}
+                  {!loading && <CheckCircle className="ml-2 h-4 w-4" />}
+                </Button>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </form>
   );
-}
+};
+

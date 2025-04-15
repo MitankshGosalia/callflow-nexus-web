@@ -27,7 +27,7 @@ const Dashboard = () => {
   
   return (
     <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
-      <NavBar />
+      <NavBar isDashboard={true} />
       <main className="container pt-28 pb-20 relative">
         {/* Background elements */}
         <FloatingElements 
@@ -154,3 +154,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

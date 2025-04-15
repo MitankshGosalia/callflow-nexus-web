@@ -1,179 +1,199 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { ScaleIn } from '@/components/animations/AnimatedElement';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useInView } from '@/hooks/use-in-view';
-import { cn } from '@/lib/utils';
-import { MessageCircle, Bot, HelpCircle, Sparkles, CheckCircle } from 'lucide-react';
+import { 
+  Building, User, CheckCircle, HelpCircle,
+  MessageCircle, Calculator, Info, FileText
+} from 'lucide-react';
 
-export function RegistrationGuide() {
+export const RegistrationGuide = () => {
   const { t } = useLanguage();
-  const [guideRef, inView] = useInView<HTMLDivElement>({ threshold: 0.1, once: true });
-  const [activeMessage, setActiveMessage] = useState(0);
-  const [showTyping, setShowTyping] = useState(false);
-  const [animationComplete, setAnimationComplete] = useState(false);
+  const [activeStep, setActiveStep] = useState(1);
+  const [isTyping, setIsTyping] = useState(true);
+  const [message, setMessage] = useState('');
+  const [showTip, setShowTip] = useState(false);
   
-  // Messages from our guide assistant
   const messages = [
-    {
-      text: t('guideWelcome'),
-      delay: 1000,
-    },
-    {
-      text: t('guideBusinessInfo'),
-      delay: 4000,
-    },
-    {
-      text: t('guideAdminAccount'),
-      delay: 8000,
-    },
-    {
-      text: t('guideEmployeeAccess'),
-      delay: 12000,
-    },
-    {
-      text: t('guideCompletion'),
-      delay: 16000,
-    }
+    "Welcome! I'll guide you through the registration process. Start by entering your business details.",
+    "Great! Now let's set up your admin account. This will be used to access all administrative features.",
+    "Almost done! Please review your information carefully before submitting."
   ];
-
-  // Progress the guide messages
+  
+  const tips = [
+    "Make sure your business email is regularly monitored, as important system notifications will be sent here.",
+    "Choose a strong password that includes uppercase letters, lowercase letters, numbers, and special characters.",
+    "You can add additional employees and team members after registration is complete.",
+    "Your business details will be used for billing and to customize your dashboard experience."
+  ];
+  
   useEffect(() => {
-    if (!inView) return;
+    let timer: NodeJS.Timeout;
     
-    // Show typing indicator before each message
-    const typingTimeout = setTimeout(() => {
-      setShowTyping(true);
-    }, 500);
-    
-    // Show each message after its delay
-    const messageTimeouts = messages.map((message, index) => {
-      return setTimeout(() => {
-        setActiveMessage(index);
-        setShowTyping(false);
+    const simulateTyping = () => {
+      setIsTyping(true);
+      setMessage('');
+      
+      const currentMessage = messages[activeStep - 1];
+      let index = 0;
+      
+      const typingInterval = setInterval(() => {
+        setMessage(prev => prev + currentMessage[index]);
+        index++;
         
-        // Show typing again after each message (except the last one)
-        if (index < messages.length - 1) {
+        if (index >= currentMessage.length) {
+          clearInterval(typingInterval);
+          setIsTyping(false);
+          
+          // Show a tip after typing is complete
           setTimeout(() => {
-            setShowTyping(true);
-          }, 2000);
-        } else {
-          setAnimationComplete(true);
+            setShowTip(true);
+          }, 1000);
         }
-      }, message.delay);
-    });
+      }, 30);
+      
+      return () => clearInterval(typingInterval);
+    };
+    
+    timer = setTimeout(simulateTyping, 500);
     
     return () => {
-      clearTimeout(typingTimeout);
-      messageTimeouts.forEach(timeout => clearTimeout(timeout));
+      clearTimeout(timer);
+      setShowTip(false);
     };
-  }, [inView, messages.length]);
-
-  // Animated waveform for the bot "speaking"
-  const Waveform = () => (
-    <div className="flex items-center gap-1 h-3 my-1">
-      {[1, 2, 3, 4].map((bar) => (
-        <span
-          key={bar}
-          className={cn(
-            "bg-primary h-full w-1 rounded-full animate-pulse",
-            animationComplete ? "opacity-0" : ""
-          )}
-          style={{ 
-            animationDelay: `${bar * 0.1}s`,
-            animationDuration: '0.8s'
-          }}
-        ></span>
-      ))}
-    </div>
-  );
-
+  }, [activeStep]);
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const stepId = Number(entry.target.id.split('-')[1]);
+            if (stepId !== activeStep) {
+              setActiveStep(stepId);
+            }
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    
+    const stepElements = document.querySelectorAll('[id^="step-"]');
+    stepElements.forEach((el) => observer.observe(el));
+    
+    return () => {
+      stepElements.forEach((el) => observer.unobserve(el));
+    };
+  }, []);
+  
   return (
-    <div
-      ref={guideRef}
-      className={cn(
-        "relative p-6 rounded-xl overflow-hidden",
-        inView ? "animate-fade-in" : "opacity-0"
-      )}
-    >
-      {/* Animated avatar */}
-      <div className="mb-6 flex justify-center">
-        <div className="relative">
-          <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary">
-            <Bot className="w-16 h-16 text-primary" />
+    <ScaleIn>
+      <Card className="border-primary/20 shadow-lg">
+        <CardContent className="pt-6">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <MessageCircle className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-bold text-lg">Registration Assistant</h3>
+              <p className="text-muted-foreground text-sm">
+                I'll help you set up your account
+              </p>
+            </div>
           </div>
           
-          {/* Pulsing ring effect */}
-          <div 
-            className={cn(
-              "absolute inset-0 rounded-full border-4 border-primary/30 animate-ping", 
-              animationComplete ? "opacity-0" : "opacity-60"
-            )} 
-            style={{ animationDuration: '3s' }}
-          ></div>
-        </div>
-      </div>
-      
-      {/* Call bot name and status */}
-      <div className="text-center mb-6">
-        <h2 className="text-xl font-bold flex items-center justify-center gap-2">
-          <span className="text-primary">AI</span> {t('assistantGuide')}
-          <span className={cn(
-            "w-2 h-2 rounded-full bg-green-500",
-            animationComplete ? "" : "animate-pulse"
-          )}></span>
-        </h2>
-        <p className="text-muted-foreground text-sm">{t('hereToHelpRegister')}</p>
-      </div>
-      
-      {/* Chat bubbles */}
-      <div className="space-y-4 max-w-md mx-auto">
-        {messages.slice(0, activeMessage + 1).map((message, index) => (
-          <div
-            key={index}
-            className={cn(
-              "p-3 rounded-lg bg-primary/10 border border-primary/20",
-              "transform transition-all duration-500",
-              index === activeMessage ? "animate-scale-in" : ""
-            )}
-          >
-            <div className="flex items-start gap-3">
-              <div className="bg-primary text-primary-foreground rounded-full p-1.5 mt-0.5">
-                {index % 2 === 0 ? 
-                  <MessageCircle className="w-4 h-4" /> : 
-                  <Sparkles className="w-4 h-4" />
-                }
+          <div className="space-y-4">
+            {/* Steps indicator */}
+            <div className="flex justify-between relative mb-8">
+              {[1, 2, 3].map((step) => (
+                <div 
+                  key={step} 
+                  className={`flex flex-col items-center z-10 ${step <= activeStep ? 'text-primary' : 'text-muted-foreground'}`}
+                >
+                  <div 
+                    className={`w-10 h-10 rounded-full flex items-center justify-center 
+                      ${step < activeStep ? 'bg-primary text-white' : 
+                        step === activeStep ? 'border-2 border-primary bg-primary/10' : 
+                        'border-2 border-muted'}`}
+                  >
+                    {step < activeStep ? (
+                      <CheckCircle className="h-5 w-5" />
+                    ) : step === 1 ? (
+                      <Building className="h-5 w-5" />
+                    ) : step === 2 ? (
+                      <User className="h-5 w-5" />
+                    ) : (
+                      <CheckCircle className="h-5 w-5" />
+                    )}
+                  </div>
+                  <span className="text-xs mt-1">
+                    {step === 1 ? 'Business' : step === 2 ? 'Admin' : 'Review'}
+                  </span>
+                </div>
+              ))}
+              
+              {/* Connecting lines */}
+              <div className="absolute top-5 left-0 right-0 h-[2px] bg-muted -z-0"></div>
+              <div 
+                className="absolute top-5 left-0 h-[2px] bg-primary -z-0 transition-all"
+                style={{ width: activeStep === 1 ? '0%' : activeStep === 2 ? '50%' : '100%' }}
+              ></div>
+            </div>
+            
+            {/* Assistant message bubble */}
+            <div className="relative bg-muted/50 rounded-lg p-4 mb-4">
+              <p className="leading-relaxed">
+                {message}
+                {isTyping && <span className="animate-pulse">|</span>}
+              </p>
+              
+              {!isTyping && showTip && (
+                <div className="mt-4 bg-background border rounded-md p-3 flex gap-3">
+                  <Info className="h-5 w-5 text-primary shrink-0" />
+                  <p className="text-sm">
+                    {tips[Math.floor(Math.random() * tips.length)]}
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            {/* Additional helpful information */}
+            <div className="bg-muted/30 rounded-lg p-4 space-y-4">
+              <div className="flex gap-3">
+                <Calculator className="h-5 w-5 text-primary shrink-0" />
+                <div>
+                  <h4 className="font-medium text-sm">Pricing Calculator</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Add your business details to get accurate pricing.
+                  </p>
+                </div>
               </div>
-              <div>
-                <p>{message.text}</p>
-                {index === activeMessage && !animationComplete && <Waveform />}
+              
+              <div className="flex gap-3">
+                <FileText className="h-5 w-5 text-primary shrink-0" />
+                <div>
+                  <h4 className="font-medium text-sm">Documentation</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Access guides on how to get the most out of our platform.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex gap-3">
+                <HelpCircle className="h-5 w-5 text-primary shrink-0" />
+                <div>
+                  <h4 className="font-medium text-sm">Need Help?</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Email us at support@aicallcenter.com for assistance.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        ))}
-        
-        {/* Typing indicator */}
-        {showTyping && (
-          <div className="p-3 rounded-lg bg-muted animate-pulse flex items-center gap-2">
-            <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
-            <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-            <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
-          </div>
-        )}
-        
-        {/* Helper buttons appear after animation completes */}
-        {animationComplete && (
-          <div className="pt-6 space-y-2 animate-fade-in">
-            <button className="flex items-center gap-2 text-sm w-full p-2 rounded-md hover:bg-primary/5 transition-colors text-left">
-              <HelpCircle className="w-4 h-4 text-primary" />
-              <span>{t('needHelp')}</span>
-            </button>
-            <button className="flex items-center gap-2 text-sm w-full p-2 rounded-md hover:bg-primary/5 transition-colors text-left">
-              <CheckCircle className="w-4 h-4 text-primary" />
-              <span>{t('readyToStart')}</span>
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+        </CardContent>
+      </Card>
+    </ScaleIn>
   );
-}
+};
+

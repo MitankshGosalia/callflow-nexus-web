@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, ChevronUp, LogIn, UserPlus } from 'lucide-react';
+import { Menu, X, ChevronDown, ChevronUp, LogIn, UserPlus, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitcher } from '@/components/navigation/ThemeSwitcher';
 import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function NavBar() {
+export function NavBar({ isDashboard = false }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [subMenuOpen, setSubMenuOpen] = useState<string | null>(null);
@@ -57,9 +57,9 @@ export function NavBar() {
       name: t('products'), 
       href: '/products',
       subLinks: [
-        { name: "AI Call Center", href: "/products#ai-call-center" },
-        { name: "Virtual Assistant", href: "/products#virtual-assistant" },
-        { name: "Analytics Suite", href: "/products#analytics-suite" },
+        { name: "AI Call Center", href: "/products/ai-call-center" },
+        { name: "Virtual Assistant", href: "/products/virtual-assistant" },
+        { name: "Analytics Suite", href: "/products/analytics-suite" },
       ]
     },
     { 
@@ -170,26 +170,41 @@ export function NavBar() {
             <LanguageSwitcher />
             <ThemeSwitcher />
             
-            {/* Login Button */}
-            <Button 
-              variant="outline" 
-              className="text-foreground/80 hover:text-foreground"
-              size="sm"
-              asChild
-            >
-              <Link to="/login" className="flex items-center gap-1">
-                <LogIn className="h-4 w-4" />
-                {t('login')}
-              </Link>
-            </Button>
-            
-            {/* Register Button */}
-            <Button className="bg-primary hover:bg-primary/90" size="sm" asChild>
-              <Link to="/register" className="flex items-center gap-1">
-                <UserPlus className="h-4 w-4" />
-                {t('register')}
-              </Link>
-            </Button>
+            {isDashboard ? (
+              // Logout Button for Dashboard
+              <Button 
+                variant="destructive" 
+                size="sm"
+                asChild
+              >
+                <Link to="/" className="flex items-center gap-1">
+                  <LogOut className="h-4 w-4" />
+                  {t('logout')}
+                </Link>
+              </Button>
+            ) : (
+              // Login and Register Buttons for public pages
+              <>
+                <Button 
+                  variant="outline" 
+                  className="text-foreground/80 hover:text-foreground"
+                  size="sm"
+                  asChild
+                >
+                  <Link to="/login" className="flex items-center gap-1">
+                    <LogIn className="h-4 w-4" />
+                    {t('login')}
+                  </Link>
+                </Button>
+                
+                <Button className="bg-primary hover:bg-primary/90" size="sm" asChild>
+                  <Link to="/register" className="flex items-center gap-1">
+                    <UserPlus className="h-4 w-4" />
+                    {t('register')}
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
           
           {/* Mobile menu button */}
@@ -262,30 +277,49 @@ export function NavBar() {
           </div>
           
           <div className="grid grid-cols-2 gap-4">
-            <Button 
-              variant="outline" 
-              className="w-full flex items-center justify-center gap-1" 
-              onClick={() => setOpen(false)}
-              asChild
-            >
-              <Link to="/login">
-                <LogIn className="h-4 w-4" />
-                {t('login')}
-              </Link>
-            </Button>
-            <Button 
-              className="w-full flex items-center justify-center gap-1" 
-              onClick={() => setOpen(false)}
-              asChild
-            >
-              <Link to="/register">
-                <UserPlus className="h-4 w-4" />
-                {t('register')}
-              </Link>
-            </Button>
+            {isDashboard ? (
+              // Logout Button for Dashboard mobile view
+              <Button 
+                variant="destructive" 
+                className="w-full flex items-center justify-center gap-1 col-span-2" 
+                onClick={() => setOpen(false)}
+                asChild
+              >
+                <Link to="/">
+                  <LogOut className="h-4 w-4" />
+                  {t('logout')}
+                </Link>
+              </Button>
+            ) : (
+              // Login and Register Buttons for public pages mobile view
+              <>
+                <Button 
+                  variant="outline" 
+                  className="w-full flex items-center justify-center gap-1" 
+                  onClick={() => setOpen(false)}
+                  asChild
+                >
+                  <Link to="/login">
+                    <LogIn className="h-4 w-4" />
+                    {t('login')}
+                  </Link>
+                </Button>
+                <Button 
+                  className="w-full flex items-center justify-center gap-1" 
+                  onClick={() => setOpen(false)}
+                  asChild
+                >
+                  <Link to="/register">
+                    <UserPlus className="h-4 w-4" />
+                    {t('register')}
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
     </header>
   );
 }
+
