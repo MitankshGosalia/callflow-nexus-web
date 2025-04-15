@@ -22,6 +22,10 @@ import ProductAnalyticsSuite from "./pages/ProductAnalyticsSuite";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Resources from "./pages/Resources";
+import ResourcesVideos from "./pages/ResourcesVideos";
+import ResourcesAPI from "./pages/ResourcesAPI";
+import ResourcesCommunity from "./pages/ResourcesCommunity";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -44,6 +48,10 @@ const App = () => {
                 <Route path="/solutions" element={<Solutions />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/resources/videos" element={<ResourcesVideos />} />
+                <Route path="/resources/api" element={<ResourcesAPI />} />
+                <Route path="/resources/community" element={<ResourcesCommunity />} />
                 <Route path="/documentation" element={<Documentation />} />
                 <Route path="/use-cases" element={<UseCases />} />
                 <Route path="/products" element={<Products />} />
@@ -64,4 +72,3 @@ const App = () => {
 };
 
 export default App;
-
