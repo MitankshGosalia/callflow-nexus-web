@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/layout/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -24,6 +24,33 @@ const data = [
 const Dashboard = () => {
   const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  
+  // Check if user is logged in
+  useEffect(() => {
+    try {
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      if (userData.authenticated) {
+        setUser(userData);
+        console.log("User authenticated:", userData);
+      } else {
+        console.log("User not authenticated, redirecting to login");
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      navigate('/login');
+    }
+  }, [navigate]);
+  
+  if (!user) {
+    return null; // Return loading state or redirect
+  }
+  
+  // Different titles based on user role
+  const welcomeText = user.role === 'admin' 
+    ? t('welcomeBackAdmin') 
+    : t('welcomeBackEmployee');
   
   return (
     <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
@@ -46,7 +73,7 @@ const Dashboard = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
               <div>
                 <h1 className="text-4xl font-bold mb-1">{t('dashboard')}</h1>
-                <p className="text-muted-foreground">{t('welcomeBack')}</p>
+                <p className="text-muted-foreground">{welcomeText} {user.name}</p>
               </div>
               
               <div className="bg-accent/10 border border-accent/20 rounded-lg px-4 py-2 flex gap-2 items-center">
@@ -141,11 +168,76 @@ const Dashboard = () => {
             </Card>
           </FadeIn>
           
-          <div className="mt-10 text-center">
+          {/* Admin-specific content */}
+          {user.role === 'admin' && (
             <FadeIn delay={500}>
-              <p className="text-xl text-muted-foreground">{t('dashboardPlaceholder')}</p>
+              <Card className="mb-8">
+                <CardHeader>
+                  <CardTitle>{t('adminTools')}</CardTitle>
+                  <CardDescription>{t('adminOnlyFeatures')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="p-4 bg-accent/10 rounded-lg">
+                      <h3 className="font-medium mb-1">User Management</h3>
+                      <p className="text-sm text-muted-foreground">Manage employee accounts and permissions</p>
+                    </div>
+                    <div className="p-4 bg-accent/10 rounded-lg">
+                      <h3 className="font-medium mb-1">System Settings</h3>
+                      <p className="text-sm text-muted-foreground">Configure platform settings and integrations</p>
+                    </div>
+                    <div className="p-4 bg-accent/10 rounded-lg">
+                      <h3 className="font-medium mb-1">Advanced Analytics</h3>
+                      <p className="text-sm text-muted-foreground">View detailed performance metrics</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </FadeIn>
-          </div>
+          )}
+          
+          {/* Employee-specific content */}
+          {user.role === 'employee' && (
+            <FadeIn delay={500}>
+              <Card className="mb-8">
+                <CardHeader>
+                  <CardTitle>{t('yourTasks')}</CardTitle>
+                  <CardDescription>{t('pendingActivities')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-accent/10 rounded-lg flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium mb-1">Follow up with customer #1234</h3>
+                        <p className="text-sm text-muted-foreground">Due: Today</p>
+                      </div>
+                      <div className="bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 px-2 py-1 rounded text-xs font-medium">
+                        Pending
+                      </div>
+                    </div>
+                    <div className="p-4 bg-accent/10 rounded-lg flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium mb-1">Complete training module</h3>
+                        <p className="text-sm text-muted-foreground">Due: Tomorrow</p>
+                      </div>
+                      <div className="bg-blue-500/20 text-blue-700 dark:text-blue-400 px-2 py-1 rounded text-xs font-medium">
+                        In Progress
+                      </div>
+                    </div>
+                    <div className="p-4 bg-accent/10 rounded-lg flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium mb-1">Team meeting</h3>
+                        <p className="text-sm text-muted-foreground">April 19, 10:00 AM</p>
+                      </div>
+                      <div className="bg-green-500/20 text-green-700 dark:text-green-400 px-2 py-1 rounded text-xs font-medium">
+                        Scheduled
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          )}
         </div>
       </main>
       <Footer />
@@ -154,4 +246,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

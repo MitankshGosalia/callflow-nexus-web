@@ -33,20 +33,39 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate login
+    // Simulate login - in a real app, this would be an API call
     setTimeout(() => {
+      // Create user object with role based on login type
+      const userData = {
+        email,
+        name: email.split('@')[0],
+        role: loginType, // 'admin' or 'employee'
+        authenticated: true
+      };
+      
+      // Store user data in localStorage
+      localStorage.setItem('user', JSON.stringify(userData));
+      
       setLoading(false);
       toast({
         title: t('loginSuccess'),
         description: t('redirectingToDashboard'),
       });
       
-      // Navigate to dashboard
+      // Navigate to dashboard after a short delay
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1500);
-    }, 1500);
+      }, 1000);
+    }, 1000);
   };
+  
+  // If user is already logged in, redirect to dashboard
+  React.useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
   
   return (
     <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
@@ -179,4 +198,3 @@ const Login = () => {
 };
 
 export default Login;
-

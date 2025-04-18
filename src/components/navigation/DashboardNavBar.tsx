@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Phone, 
@@ -17,12 +18,28 @@ import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 export function DashboardNavBar() {
   const [open, setOpen] = useState(false);
   const { t, isRTL } = useLanguage();
   const location = useLocation();
   const navRef = useRef(null);
+  const navigate = useNavigate();
+  
+  // Get user info from localStorage
+  const [user, setUser] = useState<any>(null);
+  
+  useEffect(() => {
+    try {
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      if (userData.authenticated) {
+        setUser(userData);
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+    }
+  }, []);
   
   // Dashboard navigation links
   const dashboardLinks = [
@@ -58,6 +75,22 @@ export function DashboardNavBar() {
     }
   ];
   
+  const handleLogout = () => {
+    // Remove user from localStorage
+    localStorage.removeItem('user');
+    
+    // Show toast
+    toast({
+      title: t('logoutSuccess'),
+      description: t('redirectingToHome'),
+    });
+    
+    // Redirect to home page
+    setTimeout(() => {
+      navigate('/');
+    }, 1000);
+  };
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (open && navRef.current && !navRef.current.contains(event.target)) {
@@ -87,6 +120,11 @@ export function DashboardNavBar() {
           </div>
           <div>
             <h1 className="font-bold text-xl">{t('dashboardTitle')}</h1>
+            {user && (
+              <p className="text-xs text-muted-foreground">
+                {user.role === 'admin' ? t('adminDashboard') : t('employeeDashboard')}
+              </p>
+            )}
           </div>
         </Link>
         
@@ -118,7 +156,7 @@ export function DashboardNavBar() {
           <Link to="/profile" className="mr-2">
             <Avatar>
               <AvatarImage src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800" />
-              <AvatarFallback>AJ</AvatarFallback>
+              <AvatarFallback>{user?.name?.substring(0, 2) || 'U'}</AvatarFallback>
             </Avatar>
           </Link>
           
@@ -126,12 +164,10 @@ export function DashboardNavBar() {
             variant="destructive" 
             size="sm"
             className="hidden md:flex"
-            asChild
+            onClick={handleLogout}
           >
-            <Link to="/" className="flex items-center gap-1">
-              <LogOut className="h-4 w-4" />
-              {t('logout')}
-            </Link>
+            <LogOut className="h-4 w-4 mr-1" />
+            {t('logout')}
           </Button>
           
           <Button 
@@ -207,12 +243,10 @@ export function DashboardNavBar() {
             <Button 
               variant="destructive" 
               className="w-full" 
-              asChild
+              onClick={handleLogout}
             >
-              <Link to="/" className="flex items-center justify-center gap-2">
-                <LogOut className="h-4 w-4" />
-                {t('logout')}
-              </Link>
+              <LogOut className="h-4 w-4 mr-2" />
+              {t('logout')}
             </Button>
           </div>
         </div>
