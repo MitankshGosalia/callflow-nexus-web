@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, ChevronUp, LogIn, UserPlus, LogOut } from 'lucide-react';
@@ -6,6 +7,7 @@ import { ThemeSwitcher } from '@/components/navigation/ThemeSwitcher';
 import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
+import { DashboardNavBar } from '@/components/navigation/DashboardNavBar';
 import { 
   NavigationMenu,
   NavigationMenuContent,
@@ -22,6 +24,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function NavBar({ isDashboard = false }) {
+  // If this is the dashboard, render the dashboard navbar instead
+  if (isDashboard) {
+    return <DashboardNavBar />;
+  }
+  
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [subMenuOpen, setSubMenuOpen] = useState<string | null>(null);
@@ -81,6 +88,7 @@ export function NavBar({ isDashboard = false }) {
     setSubMenuOpen(subMenuOpen === menu ? null : menu);
   };
   
+  // Public website navigation links
   const navLinks = [
     { 
       name: t('features'), 
@@ -205,39 +213,24 @@ export function NavBar({ isDashboard = false }) {
             <LanguageSwitcher />
             <ThemeSwitcher />
             
-            {isDashboard ? (
-              <Button 
-                variant="destructive" 
-                size="sm"
-                asChild
-              >
-                <Link to="/" className="flex items-center gap-1">
-                  <LogOut className="h-4 w-4" />
-                  {t('logout')}
-                </Link>
-              </Button>
-            ) : (
-              <>
-                <Button 
-                  variant="outline" 
-                  className="text-foreground/80 hover:text-foreground"
-                  size="sm"
-                  asChild
-                >
-                  <Link to="/login" className="flex items-center gap-1">
-                    <LogIn className="h-4 w-4" />
-                    {t('login')}
-                  </Link>
-                </Button>
-                
-                <Button className="bg-primary hover:bg-primary/90" size="sm" asChild>
-                  <Link to="/register" className="flex items-center gap-1">
-                    <UserPlus className="h-4 w-4" />
-                    {t('register')}
-                  </Link>
-                </Button>
-              </>
-            )}
+            <Button 
+              variant="outline" 
+              className="text-foreground/80 hover:text-foreground"
+              size="sm"
+              asChild
+            >
+              <Link to="/login" className="flex items-center gap-1">
+                <LogIn className="h-4 w-4" />
+                {t('login')}
+              </Link>
+            </Button>
+            
+            <Button className="bg-primary hover:bg-primary/90" size="sm" asChild>
+              <Link to="/register" className="flex items-center gap-1">
+                <UserPlus className="h-4 w-4" />
+                {t('register')}
+              </Link>
+            </Button>
           </div>
           
           <Button 
@@ -329,43 +322,27 @@ export function NavBar({ isDashboard = false }) {
             </div>
             
             <div className="grid grid-cols-2 gap-4">
-              {isDashboard ? (
-                <Button 
-                  variant="destructive" 
-                  className="w-full flex items-center justify-center gap-1 col-span-2" 
-                  onClick={() => setOpen(false)}
-                  asChild
-                >
-                  <Link to="/">
-                    <LogOut className="h-4 w-4" />
-                    {t('logout')}
-                  </Link>
-                </Button>
-              ) : (
-                <>
-                  <Button 
-                    variant="outline" 
-                    className="w-full flex items-center justify-center gap-1" 
-                    onClick={() => setOpen(false)}
-                    asChild
-                  >
-                    <Link to="/login">
-                      <LogIn className="h-4 w-4" />
-                      {t('login')}
-                    </Link>
-                  </Button>
-                  <Button 
-                    className="w-full flex items-center justify-center gap-1" 
-                    onClick={() => setOpen(false)}
-                    asChild
-                  >
-                    <Link to="/register">
-                      <UserPlus className="h-4 w-4" />
-                      {t('register')}
-                    </Link>
-                  </Button>
-                </>
-              )}
+              <Button 
+                variant="outline" 
+                className="w-full flex items-center justify-center gap-1" 
+                onClick={() => setOpen(false)}
+                asChild
+              >
+                <Link to="/login">
+                  <LogIn className="h-4 w-4" />
+                  {t('login')}
+                </Link>
+              </Button>
+              <Button 
+                className="w-full flex items-center justify-center gap-1" 
+                onClick={() => setOpen(false)}
+                asChild
+              >
+                <Link to="/register">
+                  <UserPlus className="h-4 w-4" />
+                  {t('register')}
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

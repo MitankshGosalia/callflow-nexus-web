@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,6 +27,11 @@ import ResourcesVideos from "./pages/ResourcesVideos";
 import ResourcesAPI from "./pages/ResourcesAPI";
 import ResourcesCommunity from "./pages/ResourcesCommunity";
 import Blog from "./pages/Blog";
+import CallLog from "./pages/CallLog";
+import Help from "./pages/Help";
+import AIAgent from "./pages/AIAgent";
+import MakeCall from "./pages/MakeCall";
+import Profile from "./pages/Profile";
 import React from "react";
 
 const queryClient = new QueryClient();
@@ -61,6 +67,11 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/calllog" element={<CallLog />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/ai-agent" element={<AIAgent />} />
+                <Route path="/make-call" element={<MakeCall />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
