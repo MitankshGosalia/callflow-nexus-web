@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/layout/Footer';
@@ -31,6 +30,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { FadeIn, ScaleIn } from '@/components/animations/AnimatedElement';
 import { FloatingElements } from '@/components/animations/FloatingElements';
 import { toast } from '@/hooks/use-toast';
+import { callService } from '@/lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 const MakeCall = () => {
   const { t, isRTL } = useLanguage();
@@ -43,8 +44,9 @@ const MakeCall = () => {
   const [isSpeakerOn, setIsSpeakerOn] = useState(false);
   const [isAIEnabled, setIsAIEnabled] = useState(true);
   const [durationInterval, setDurationInterval] = useState(null);
+  const navigate = useNavigate();
   
-  const startCall = () => {
+  const startCall = async () => {
     if (!recipient) {
       toast({
         title: "Error",
@@ -54,34 +56,72 @@ const MakeCall = () => {
       return;
     }
     
-    toast({
-      title: "Call initiated",
-      description: `Connecting to ${recipient}...`,
-    });
-    
-    setTimeout(() => {
-      setCallInProgress(true);
+    try {
+      // Create call log in Supabase
+      const callLog = await callService.createCallLog({
+        recipient_name: recipient,
+        recipient_number: '', // In a real app, you'd get this from a form or contacts
+        duration: 0,
+        notes,
+        call_type: callType,
+        status: 'completed',
+        ai_assistant_enabled: isAIEnabled
+      });
+      
+      toast({
+        title: "Call initiated",
+        description: `Connecting to ${recipient}...`,
+      });
+      
       // Start call duration timer
       const interval = setInterval(() => {
         setCallDuration(prev => prev + 1);
       }, 1000);
       setDurationInterval(interval);
-    }, 1500);
+      setCallInProgress(true);
+      
+    } catch (error) {
+      console.error('Error starting call:', error);
+      toast({
+        title: "Error",
+        description: "Failed to start call. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
   
-  const endCall = () => {
-    setCallInProgress(false);
-    clearInterval(durationInterval);
-    
-    toast({
-      title: "Call ended",
-      description: `Call duration: ${formatDuration(callDuration)}`,
-    });
-    
-    // Reset for next call
-    setTimeout(() => {
-      setCallDuration(0);
-    }, 3000);
+  const endCall = async () => {
+    try {
+      // Update call log with duration
+      if (callInProgress) {
+        await callService.updateCallLog(callId, {
+          duration: callDuration,
+          ended_at: new Date().toISOString(),
+          status: 'completed'
+        });
+      }
+      
+      setCallInProgress(false);
+      clearInterval(durationInterval);
+      
+      toast({
+        title: "Call ended",
+        description: `Call duration: ${formatDuration(callDuration)}`,
+      });
+      
+      // Reset for next call
+      setTimeout(() => {
+        setCallDuration(0);
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Error ending call:', error);
+      toast({
+        title: "Error",
+        description: "Failed to end call properly. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
   
   const formatDuration = (seconds) => {
