@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
@@ -14,11 +13,10 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitcher } from '@/components/navigation/ThemeSwitcher';
-import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function DashboardNavBar() {
   const [open, setOpen] = useState(false);
@@ -149,7 +147,6 @@ export function DashboardNavBar() {
         
         <div className="flex items-center gap-2">
           <div className="hidden md:flex items-center gap-2 mr-2">
-            <LanguageSwitcher />
             <ThemeSwitcher />
           </div>
           
@@ -236,7 +233,6 @@ export function DashboardNavBar() {
           
           <div className="mt-auto space-y-4">
             <div className="flex items-center justify-center gap-4 pt-4 border-t">
-              <LanguageSwitcher />
               <ThemeSwitcher />
             </div>
             

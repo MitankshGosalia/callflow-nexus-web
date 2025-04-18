@@ -1,10 +1,8 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, ChevronUp, LogIn, UserPlus, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeSwitcher } from '@/components/navigation/ThemeSwitcher';
-import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import { DashboardNavBar } from '@/components/navigation/DashboardNavBar';
@@ -210,7 +208,6 @@ export function NavBar({ isDashboard = false }) {
         
         <div className="flex items-center gap-2">
           <div className="hidden md:flex items-center gap-2">
-            <LanguageSwitcher />
             <ThemeSwitcher />
             
             <Button 
@@ -317,7 +314,6 @@ export function NavBar({ isDashboard = false }) {
           
           <div className="mt-auto space-y-4">
             <div className="flex items-center justify-between border-t border-border pt-4">
-              <LanguageSwitcher />
               <ThemeSwitcher />
             </div>
             
