@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/layout/Footer';
@@ -192,23 +191,21 @@ const MakeCall = () => {
         duration: 0,
         notes,
         call_type: callType,
-        status: 'completed', // Fixed: changed from 'in_progress' to 'completed'
+        status: 'completed',
         started_at: new Date().toISOString(),
         ended_at: null,
         recording_url: null,
         ai_assistant_enabled: true
       });
 
-      // Get the current user session
       const { data: sessionData } = await supabase.auth.getSession();
       const userId = sessionData.session?.user?.id;
 
-      // Call AI Handler Edge Function
       const aiResponse = await supabase.functions.invoke('ai-call-handler', {
         body: JSON.stringify({
           callDetails: {
             callId: callLog.id,
-            userId: userId, // Fixed: using the session user id instead of the deprecated method
+            userId: userId,
             context: notes
           },
           userMessage: `Call recipient: ${recipient}. Initial context: ${notes}`
@@ -253,7 +250,6 @@ const MakeCall = () => {
     <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
       <NavBar isDashboard={true} />
       <main className="container pt-28 pb-20 relative">
-        {/* Background elements */}
         <FloatingElements 
           count={6} 
           speed="slow" 

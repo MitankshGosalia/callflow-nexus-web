@@ -9,6 +9,44 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ai_call_transcripts: {
+        Row: {
+          call_id: string | null
+          emotion: string | null
+          id: string
+          speaker: string | null
+          timestamp: string | null
+          transcript: string | null
+          user_id: string | null
+        }
+        Insert: {
+          call_id?: string | null
+          emotion?: string | null
+          id?: string
+          speaker?: string | null
+          timestamp?: string | null
+          transcript?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          call_id?: string | null
+          emotion?: string | null
+          id?: string
+          speaker?: string | null
+          timestamp?: string | null
+          transcript?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_call_transcripts_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "call_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_interactions: {
         Row: {
           call_id: string | null
@@ -118,45 +156,57 @@ export type Database = {
       call_logs: {
         Row: {
           ai_assistant_enabled: boolean | null
+          ai_summary: string | null
+          ai_transcript: string | null
           call_type: string
           created_at: string
           duration: number | null
           ended_at: string | null
           id: string
+          language: string | null
           notes: string | null
           recipient_name: string
           recipient_number: string
           recording_url: string | null
+          sentiment_score: number | null
           started_at: string
           status: string
           user_id: string | null
         }
         Insert: {
           ai_assistant_enabled?: boolean | null
+          ai_summary?: string | null
+          ai_transcript?: string | null
           call_type: string
           created_at?: string
           duration?: number | null
           ended_at?: string | null
           id?: string
+          language?: string | null
           notes?: string | null
           recipient_name: string
           recipient_number: string
           recording_url?: string | null
+          sentiment_score?: number | null
           started_at?: string
           status: string
           user_id?: string | null
         }
         Update: {
           ai_assistant_enabled?: boolean | null
+          ai_summary?: string | null
+          ai_transcript?: string | null
           call_type?: string
           created_at?: string
           duration?: number | null
           ended_at?: string | null
           id?: string
+          language?: string | null
           notes?: string | null
           recipient_name?: string
           recipient_number?: string
           recording_url?: string | null
+          sentiment_score?: number | null
           started_at?: string
           status?: string
           user_id?: string | null
