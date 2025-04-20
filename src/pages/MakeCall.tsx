@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/layout/Footer';
@@ -49,6 +50,7 @@ const MakeCall = () => {
   const activeCallIdRef = useRef<string | null>(null);
   const navigate = useNavigate();
   const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(true);
+  const [isInitiatingCall, setIsInitiatingCall] = useState(false);
   
   useEffect(() => {
     checkSupabaseConfig();
@@ -83,7 +85,7 @@ const MakeCall = () => {
     }
   };
   
-  const handleSupabaseSetup = (url: string, key: string) => {
+  const handleSupabaseSetup = () => {
     try {
       window.location.reload();
     } catch (error) {
@@ -137,7 +139,7 @@ const MakeCall = () => {
       console.error('Error starting call:', error);
       toast({
         title: "Error",
-        description: "Failed to start call. Please try again.",
+        description: "Failed to start call. Please check your connection and try again.",
         variant: "destructive"
       });
     }
@@ -184,6 +186,17 @@ const MakeCall = () => {
   };
   
   const initiateAICall = async () => {
+    if (!recipient) {
+      toast({
+        title: "Error",
+        description: "Please enter a recipient for the call",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsInitiatingCall(true);
+    
     try {
       const callLog = await callService.createCallLog({
         recipient_name: recipient,
@@ -201,29 +214,51 @@ const MakeCall = () => {
       const { data: sessionData } = await supabase.auth.getSession();
       const userId = sessionData.session?.user?.id;
 
-      const aiResponse = await supabase.functions.invoke('ai-call-handler', {
-        body: JSON.stringify({
-          callDetails: {
-            callId: callLog.id,
-            userId: userId,
-            context: notes
-          },
-          userMessage: `Call recipient: ${recipient}. Initial context: ${notes}`
-        })
-      });
+      // Test if the Edge Function exists first
+      try {
+        console.log("Calling AI call handler function...");
+        const aiResponse = await supabase.functions.invoke('ai-call-handler', {
+          body: JSON.stringify({
+            callDetails: {
+              callId: callLog.id,
+              userId: userId,
+              context: notes || "General business call"
+            },
+            userMessage: `Call recipient: ${recipient}. Initial context: ${notes || "General business call"}`
+          })
+        });
 
-      toast({
-        title: "AI Call Initiated",
-        description: `AI is handling the call with ${recipient}`
-      });
-
+        console.log("AI Call response:", aiResponse);
+        
+        toast({
+          title: "AI Call Initiated",
+          description: `AI is handling the call with ${recipient}`
+        });
+      } catch (functionError) {
+        console.error("Edge function error details:", functionError);
+        
+        // Update the call log to indicate it still completed even though AI failed
+        await callService.updateCallLog(callLog.id, {
+          status: 'completed',
+          ended_at: new Date().toISOString(),
+          notes: notes + "\n[System: AI call handling failed but call was logged]"
+        });
+        
+        toast({
+          title: "AI Assistant Unavailable",
+          description: "Call was logged but AI could not handle the call. Please try again later.",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       console.error('AI Call Initiation Error:', error);
       toast({
         title: "Call Initiation Failed",
-        description: "Unable to start AI-assisted call",
+        description: "Unable to start AI-assisted call. Please check your connection.",
         variant: "destructive"
       });
+    } finally {
+      setIsInitiatingCall(false);
     }
   };
 
@@ -414,9 +449,10 @@ const MakeCall = () => {
                             className="w-full mt-2 gap-2" 
                             variant="outline"
                             onClick={initiateAICall}
+                            disabled={isInitiatingCall}
                           >
                             <Bot className="h-5 w-5" />
-                            Start AI Call
+                            {isInitiatingCall ? "Starting AI Call..." : "Start AI Call"}
                           </Button>
                         )}
                       </>

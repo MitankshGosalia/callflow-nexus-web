@@ -1,12 +1,21 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// Default values for development (these will be replaced by actual env values if available)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+// Get environment variables or stored values
+const getSupabaseUrl = () => {
+  const storedUrl = localStorage.getItem('VITE_SUPABASE_URL');
+  return storedUrl || import.meta.env.VITE_SUPABASE_URL || 'https://luaiepqxmmqlikmhyvwe.supabase.co';
+};
+
+const getSupabaseAnonKey = () => {
+  const storedKey = localStorage.getItem('VITE_SUPABASE_ANON_KEY');
+  return storedKey || import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1YWllcHF4bW1xbGlrbWh5dndlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMzM1OTYsImV4cCI6MjA2MDcwOTU5Nn0.12_TD0oHTSbjPAKK9vQWYyJKF1vKtwsdDeDrIXROtl8';
+};
 
 // Initialize the Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(getSupabaseUrl(), getSupabaseAnonKey());
+
+console.log("Supabase client initialized with URL:", getSupabaseUrl());
 
 // Call-related types
 export interface CallLog {
@@ -37,64 +46,104 @@ export interface AIInteraction {
 // Call-related functions
 export const callService = {
   async createCallLog(callData: Omit<CallLog, 'id' | 'user_id' | 'created_at'>) {
-    const { data, error } = await supabase
-      .from('call_logs')
-      .insert([callData])
-      .select()
-      .single();
-      
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('call_logs')
+        .insert([callData])
+        .select()
+        .single();
+        
+      if (error) {
+        console.error("Error creating call log:", error);
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      console.error("Exception creating call log:", error);
+      throw error;
+    }
   },
   
   async updateCallLog(id: string, updates: Partial<CallLog>) {
-    const { data, error } = await supabase
-      .from('call_logs')
-      .update(updates)
-      .eq('id', id)
-      .select()
-      .single();
-      
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('call_logs')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+        
+      if (error) {
+        console.error("Error updating call log:", error);
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      console.error("Exception updating call log:", error);
+      throw error;
+    }
   },
   
   async getUserCalls() {
-    const { data, error } = await supabase
-      .from('call_logs')
-      .select('*')
-      .order('created_at', { ascending: false });
-      
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('call_logs')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (error) {
+        console.error("Error getting user calls:", error);
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      console.error("Exception getting user calls:", error);
+      throw error;
+    }
   }
 };
 
 // AI interaction functions
 export const aiService = {
   async createInteraction(message: string, callId?: string) {
-    const { data, error } = await supabase
-      .from('ai_interactions')
-      .insert([
-        {
-          message,
-          call_id: callId
-        }
-      ])
-      .select()
-      .single();
-      
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('ai_interactions')
+        .insert([
+          {
+            message,
+            call_id: callId
+          }
+        ])
+        .select()
+        .single();
+        
+      if (error) {
+        console.error("Error creating AI interaction:", error);
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      console.error("Exception creating AI interaction:", error);
+      throw error;
+    }
   },
   
   async getUserInteractions() {
-    const { data, error } = await supabase
-      .from('ai_interactions')
-      .select('*')
-      .order('created_at', { ascending: false });
-      
-    if (error) throw error;
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('ai_interactions')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (error) {
+        console.error("Error getting user interactions:", error);
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      console.error("Exception getting user interactions:", error);
+      throw error;
+    }
   }
 };
