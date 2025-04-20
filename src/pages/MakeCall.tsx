@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/layout/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -30,12 +30,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { FadeIn, ScaleIn } from '@/components/animations/AnimatedElement';
 import { FloatingElements } from '@/components/animations/FloatingElements';
 import { toast } from '@/hooks/use-toast';
-import { callService } from '@/lib/supabase';
+import { callService, CallLog } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
 
 const MakeCall = () => {
   const { t, isRTL } = useLanguage();
-  const [callType, setCallType] = useState('direct');
+  const [callType, setCallType] = useState<'direct' | 'conference'>('direct');
   const [recipient, setRecipient] = useState('');
   const [notes, setNotes] = useState('');
   const [callInProgress, setCallInProgress] = useState(false);
@@ -43,7 +43,8 @@ const MakeCall = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isSpeakerOn, setIsSpeakerOn] = useState(false);
   const [isAIEnabled, setIsAIEnabled] = useState(true);
-  const [durationInterval, setDurationInterval] = useState(null);
+  const [durationInterval, setDurationInterval] = useState<NodeJS.Timeout | null>(null);
+  const activeCallIdRef = useRef<string | null>(null);
   const navigate = useNavigate();
   
   const startCall = async () => {
@@ -65,8 +66,14 @@ const MakeCall = () => {
         notes,
         call_type: callType,
         status: 'completed',
+        started_at: new Date().toISOString(),
+        ended_at: null,
+        recording_url: null,
         ai_assistant_enabled: isAIEnabled
       });
+      
+      // Store the active call ID in the ref
+      activeCallIdRef.current = callLog.id;
       
       toast({
         title: "Call initiated",
@@ -93,8 +100,8 @@ const MakeCall = () => {
   const endCall = async () => {
     try {
       // Update call log with duration
-      if (callInProgress) {
-        await callService.updateCallLog(callId, {
+      if (callInProgress && activeCallIdRef.current) {
+        await callService.updateCallLog(activeCallIdRef.current, {
           duration: callDuration,
           ended_at: new Date().toISOString(),
           status: 'completed'
@@ -102,7 +109,9 @@ const MakeCall = () => {
       }
       
       setCallInProgress(false);
-      clearInterval(durationInterval);
+      if (durationInterval) {
+        clearInterval(durationInterval);
+      }
       
       toast({
         title: "Call ended",
@@ -112,6 +121,7 @@ const MakeCall = () => {
       // Reset for next call
       setTimeout(() => {
         setCallDuration(0);
+        activeCallIdRef.current = null;
       }, 3000);
       
     } catch (error) {
@@ -124,7 +134,7 @@ const MakeCall = () => {
     }
   };
   
-  const formatDuration = (seconds) => {
+  const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
@@ -175,7 +185,7 @@ const MakeCall = () => {
                     <CardDescription>{t('enterCallDetails')}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Tabs defaultValue="direct" className="mb-6" onValueChange={setCallType}>
+                    <Tabs defaultValue="direct" className="mb-6" onValueChange={(value) => setCallType(value as 'direct' | 'conference')}>
                       <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="direct">Direct Call</TabsTrigger>
                         <TabsTrigger value="conference">Conference Call</TabsTrigger>
