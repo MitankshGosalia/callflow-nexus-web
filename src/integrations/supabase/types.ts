@@ -9,7 +9,160 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      ai_interactions: {
+        Row: {
+          call_id: string | null
+          created_at: string
+          id: string
+          message: string
+          response: string | null
+          user_id: string | null
+        }
+        Insert: {
+          call_id?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          response?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          call_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          response?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_interactions_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "call_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_training_data: {
+        Row: {
+          category: string | null
+          created_at: string
+          effectiveness_rating: number | null
+          id: string
+          prompt: string
+          response: string
+          user_id: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          effectiveness_rating?: number | null
+          id?: string
+          prompt: string
+          response: string
+          user_id?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          effectiveness_rating?: number | null
+          id?: string
+          prompt?: string
+          response?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      call_analysis: {
+        Row: {
+          action_items: string[] | null
+          call_id: string
+          created_at: string
+          id: string
+          key_topics: string[] | null
+          sentiment_score: number | null
+          summary: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_items?: string[] | null
+          call_id: string
+          created_at?: string
+          id?: string
+          key_topics?: string[] | null
+          sentiment_score?: number | null
+          summary?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_items?: string[] | null
+          call_id?: string
+          created_at?: string
+          id?: string
+          key_topics?: string[] | null
+          sentiment_score?: number | null
+          summary?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_analysis_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "call_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_logs: {
+        Row: {
+          ai_assistant_enabled: boolean | null
+          call_type: string
+          created_at: string
+          duration: number | null
+          ended_at: string | null
+          id: string
+          notes: string | null
+          recipient_name: string
+          recipient_number: string
+          recording_url: string | null
+          started_at: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          ai_assistant_enabled?: boolean | null
+          call_type: string
+          created_at?: string
+          duration?: number | null
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          recipient_name: string
+          recipient_number: string
+          recording_url?: string | null
+          started_at?: string
+          status: string
+          user_id?: string | null
+        }
+        Update: {
+          ai_assistant_enabled?: boolean | null
+          call_type?: string
+          created_at?: string
+          duration?: number | null
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          recipient_name?: string
+          recipient_number?: string
+          recording_url?: string | null
+          started_at?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

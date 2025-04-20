@@ -1,6 +1,6 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { Configuration, OpenAIApi } from "https://esm.sh/openai@3.2.1"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,7 +8,7 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -16,39 +16,53 @@ serve(async (req) => {
   try {
     const { message } = await req.json()
     
-    // Here you'll integrate with your preferred AI service
-    // For now, we'll return a mock response
-    const aiResponse = `AI Assistant: I understand your message: "${message}". How can I help you further?`
+    const configuration = new Configuration({
+      apiKey: Deno.env.get('OPENAI_API_KEY'),
+    })
+    const openai = new OpenAIApi(configuration)
+
+    const completion = await openai.createChatCompletion({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You are an AI assistant for a call center. You help users with their calls and provide professional, helpful responses. Keep responses concise and focused on call-related topics."
+        },
+        {
+          role: "user",
+          content: message
+        }
+      ],
+    })
+
+    const aiResponse = completion.data.choices[0]?.message?.content || "I apologize, I couldn't process that request."
     
     // Log the interaction in the database
-    // This is commented out until we have proper access to environment variables
-    /*
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2')
     const supabaseClient = createClient(
-      // Get from environment variables
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
     
-    const { error } = await supabaseClient
+    await supabaseClient
       .from('ai_interactions')
       .insert({
         message: message,
         response: aiResponse
       })
-      
-    if (error) {
-      console.error('Error logging AI interaction:', error)
-    }
-    */
     
     return new Response(
       JSON.stringify({ response: aiResponse }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     )
   } catch (error) {
+    console.error('Error:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      },
     )
   }
 })
