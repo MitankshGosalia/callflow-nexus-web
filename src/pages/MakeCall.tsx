@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/layout/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -30,8 +30,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { FadeIn, ScaleIn } from '@/components/animations/AnimatedElement';
 import { FloatingElements } from '@/components/animations/FloatingElements';
 import { toast } from '@/hooks/use-toast';
-import { callService, CallLog } from '@/lib/supabase';
+import { callService, CallLog, supabase } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
+import { SupabaseSetup } from '@/components/supabase/SupabaseSetup';
+import { createClient } from '@supabase/supabase-js';
 
 const MakeCall = () => {
   const { t, isRTL } = useLanguage();
@@ -46,6 +48,53 @@ const MakeCall = () => {
   const [durationInterval, setDurationInterval] = useState<NodeJS.Timeout | null>(null);
   const activeCallIdRef = useRef<string | null>(null);
   const navigate = useNavigate();
+  const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(true);
+  
+  useEffect(() => {
+    checkSupabaseConfig();
+  }, []);
+  
+  const checkSupabaseConfig = () => {
+    try {
+      const storedUrl = localStorage.getItem('VITE_SUPABASE_URL');
+      const storedKey = localStorage.getItem('VITE_SUPABASE_ANON_KEY');
+      
+      if (storedUrl && storedKey) {
+        const newClient = createClient(storedUrl, storedKey);
+        newClient.auth.getSession().then(() => {
+          console.log("Supabase connection established using stored credentials");
+          setIsSupabaseConfigured(true);
+        }).catch(error => {
+          console.error("Supabase connection test failed:", error);
+          setIsSupabaseConfigured(false);
+        });
+      } else {
+        supabase.auth.getSession().then(() => {
+          console.log("Supabase connection established using environment variables");
+          setIsSupabaseConfigured(true);
+        }).catch(error => {
+          console.error("Supabase connection test failed:", error);
+          setIsSupabaseConfigured(false);
+        });
+      }
+    } catch (error) {
+      console.error("Error checking Supabase configuration:", error);
+      setIsSupabaseConfigured(false);
+    }
+  };
+  
+  const handleSupabaseSetup = (url: string, key: string) => {
+    try {
+      window.location.reload();
+    } catch (error) {
+      console.error("Error setting up Supabase:", error);
+      toast({
+        title: "Configuration Error",
+        description: "Failed to configure Supabase. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
   
   const startCall = async () => {
     if (!recipient) {
@@ -58,10 +107,9 @@ const MakeCall = () => {
     }
     
     try {
-      // Create call log in Supabase
       const callLog = await callService.createCallLog({
         recipient_name: recipient,
-        recipient_number: '', // In a real app, you'd get this from a form or contacts
+        recipient_number: '',
         duration: 0,
         notes,
         call_type: callType,
@@ -72,7 +120,6 @@ const MakeCall = () => {
         ai_assistant_enabled: isAIEnabled
       });
       
-      // Store the active call ID in the ref
       activeCallIdRef.current = callLog.id;
       
       toast({
@@ -80,7 +127,6 @@ const MakeCall = () => {
         description: `Connecting to ${recipient}...`,
       });
       
-      // Start call duration timer
       const interval = setInterval(() => {
         setCallDuration(prev => prev + 1);
       }, 1000);
@@ -99,7 +145,6 @@ const MakeCall = () => {
   
   const endCall = async () => {
     try {
-      // Update call log with duration
       if (callInProgress && activeCallIdRef.current) {
         await callService.updateCallLog(activeCallIdRef.current, {
           duration: callDuration,
@@ -118,12 +163,10 @@ const MakeCall = () => {
         description: `Call duration: ${formatDuration(callDuration)}`,
       });
       
-      // Reset for next call
       setTimeout(() => {
         setCallDuration(0);
         activeCallIdRef.current = null;
       }, 3000);
-      
     } catch (error) {
       console.error('Error ending call:', error);
       toast({
@@ -140,13 +183,24 @@ const MakeCall = () => {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
   
-  // Recent contacts for quick selection
   const recentContacts = [
     { name: "Sarah Johnson", department: "Sales", phone: "123-456-7890" },
     { name: "David Lee", department: "Customer Support", phone: "123-456-7891" },
     { name: "Emily Wilson", department: "Marketing", phone: "123-456-7892" },
     { name: "Michael Brown", department: "Technical Support", phone: "123-456-7893" }
   ];
+  
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
+        <NavBar isDashboard={true} />
+        <main className="container pt-28 pb-20">
+          <SupabaseSetup onComplete={handleSupabaseSetup} />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
@@ -176,7 +230,6 @@ const MakeCall = () => {
           </FadeIn>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Call form */}
             <div className="lg:col-span-2">
               <ScaleIn>
                 <Card>
@@ -264,7 +317,6 @@ const MakeCall = () => {
                       </TabsContent>
                     </Tabs>
                     
-                    {/* Call controls */}
                     {callInProgress ? (
                       <div className="flex flex-col items-center pt-4">
                         <div className="mb-6 text-center">
@@ -317,7 +369,6 @@ const MakeCall = () => {
               </ScaleIn>
             </div>
             
-            {/* Recent contacts */}
             <div>
               <ScaleIn delay={100}>
                 <Card>

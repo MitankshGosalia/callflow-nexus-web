@@ -1,11 +1,12 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+// Default values for development (these will be replaced by actual env values if available)
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+
 // Initialize the Supabase client
-export const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Call-related types
 export interface CallLog {
