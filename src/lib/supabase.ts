@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 
 // Get environment variables or stored values
@@ -12,8 +11,18 @@ const getSupabaseAnonKey = () => {
   return storedKey || import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1YWllcHF4bW1xbGlrbWh5dndlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMzM1OTYsImV4cCI6MjA2MDcwOTU5Nn0.12_TD0oHTSbjPAKK9vQWYyJKF1vKtwsdDeDrIXROtl8';
 };
 
-// Initialize the Supabase client
-export const supabase = createClient(getSupabaseUrl(), getSupabaseAnonKey());
+// Initialize the Supabase client with auth options
+export const supabase = createClient(
+  getSupabaseUrl(), 
+  getSupabaseAnonKey(),
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
+    }
+  }
+);
 
 console.log("Supabase client initialized with URL:", getSupabaseUrl());
 
@@ -47,9 +56,16 @@ export interface AIInteraction {
 export const callService = {
   async createCallLog(callData: Omit<CallLog, 'id' | 'user_id' | 'created_at'>) {
     try {
+      // Get the current user session
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userId = sessionData?.session?.user?.id;
+      
+      // Add the user_id to the call data if available
+      const callDataWithUser = userId ? { ...callData, user_id: userId } : callData;
+      
       const { data, error } = await supabase
         .from('call_logs')
-        .insert([callData])
+        .insert([callDataWithUser])
         .select()
         .single();
         

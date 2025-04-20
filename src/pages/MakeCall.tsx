@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/layout/Footer';
@@ -212,46 +211,55 @@ const MakeCall = () => {
       });
 
       const { data: sessionData } = await supabase.auth.getSession();
-      const userId = sessionData.session?.user?.id;
+      const userId = sessionData?.session?.user?.id;
 
-      // Test if the Edge Function exists first
-      try {
-        console.log("Calling AI call handler function...");
-        const aiResponse = await supabase.functions.invoke('ai-call-handler', {
-          body: JSON.stringify({
-            callDetails: {
-              callId: callLog.id,
-              userId: userId,
-              context: notes || "General business call"
-            },
-            userMessage: `Call recipient: ${recipient}. Initial context: ${notes || "General business call"}`
-          })
-        });
-
-        console.log("AI Call response:", aiResponse);
-        
-        toast({
-          title: "AI Call Initiated",
-          description: `AI is handling the call with ${recipient}`
-        });
-      } catch (functionError) {
-        console.error("Edge function error details:", functionError);
-        
-        // Update the call log to indicate it still completed even though AI failed
-        await callService.updateCallLog(callLog.id, {
-          status: 'completed',
-          ended_at: new Date().toISOString(),
-          notes: notes + "\n[System: AI call handling failed but call was logged]"
-        });
-        
-        toast({
-          title: "AI Assistant Unavailable",
-          description: "Call was logged but AI could not handle the call. Please try again later.",
-          variant: "destructive"
-        });
+      if (!userId) {
+        console.log("No authenticated user found, proceeding without user ID");
       }
+
+      console.log("Calling AI call handler function...");
+      console.log("Call details:", {
+        callId: callLog.id, 
+        userId: userId || null, 
+        context: notes || "General business call"
+      });
+      
+      const { data, error } = await supabase.functions.invoke('ai-call-handler', {
+        body: JSON.stringify({
+          callDetails: {
+            callId: callLog.id,
+            userId: userId || null,
+            context: notes || "General business call"
+          },
+          userMessage: `Call recipient: ${recipient}. Initial context: ${notes || "General business call"}`
+        })
+      });
+
+      if (error) {
+        console.error("Edge function error:", error);
+        throw new Error(`Edge function error: ${error.message}`);
+      }
+
+      console.log("AI Call response:", data);
+      
+      if (!data || !data.success) {
+        throw new Error("AI call failed: " + (data?.error || "Unknown error"));
+      }
+      
+      toast({
+        title: "AI Call Initiated",
+        description: `AI is handling the call with ${recipient}`
+      });
+      
+      await callService.updateCallLog(callLog.id, {
+        status: 'completed',
+        ended_at: new Date().toISOString(),
+        notes: notes + "\n[System: AI call handled successfully]"
+      });
+      
     } catch (error) {
       console.error('AI Call Initiation Error:', error);
+      
       toast({
         title: "Call Initiation Failed",
         description: "Unable to start AI-assisted call. Please check your connection.",
