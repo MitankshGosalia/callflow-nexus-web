@@ -183,6 +183,48 @@ const MakeCall = () => {
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
   
+  const initiateAICall = async () => {
+    try {
+      const callLog = await callService.createCallLog({
+        recipient_name: recipient,
+        recipient_number: '',
+        duration: 0,
+        notes,
+        call_type: callType,
+        status: 'in_progress',
+        started_at: new Date().toISOString(),
+        ended_at: null,
+        recording_url: null,
+        ai_assistant_enabled: true
+      });
+
+      // Call AI Handler Edge Function
+      const aiResponse = await supabase.functions.invoke('ai-call-handler', {
+        body: JSON.stringify({
+          callDetails: {
+            callId: callLog.id,
+            userId: supabase.auth.user()?.id,
+            context: notes
+          },
+          userMessage: `Call recipient: ${recipient}. Initial context: ${notes}`
+        })
+      });
+
+      toast({
+        title: "AI Call Initiated",
+        description: `AI is handling the call with ${recipient}`
+      });
+
+    } catch (error) {
+      console.error('AI Call Initiation Error:', error);
+      toast({
+        title: "Call Initiation Failed",
+        description: "Unable to start AI-assisted call",
+        variant: "destructive"
+      });
+    }
+  };
+
   const recentContacts = [
     { name: "Sarah Johnson", department: "Sales", phone: "123-456-7890" },
     { name: "David Lee", department: "Customer Support", phone: "123-456-7891" },
