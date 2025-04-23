@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { HeroSection } from '@/components/home/HeroSection';
@@ -9,7 +10,7 @@ import { DemoSection } from '@/components/home/DemoSection';
 import { CTASection } from '@/components/home/CTASection';
 import { Footer } from '@/components/layout/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Logo } from '@/components/Logo';
+import Logo from '@/components/Logo';  // Changed from { Logo } to default import
 
 const Index = () => {
   console.log("Rendering Index page");
