@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { Footer } from '@/components/layout/Footer';
@@ -49,8 +48,8 @@ const Dashboard = () => {
   
   // Different titles based on user role
   const welcomeText = user.role === 'admin' 
-    ? t('welcomeBackAdmin') 
-    : t('welcomeBackEmployee');
+    ? 'Welcome back, Admin' 
+    : 'Welcome back, Employee';
   
   return (
     <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>

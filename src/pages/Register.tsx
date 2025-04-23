@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '@/components/navigation/NavBar';
@@ -20,8 +19,18 @@ const Register = () => {
       title: t('registrationSuccess'),
       description: t('redirectingToDashboard'),
     });
-    
-    // In a real app, you'd redirect to dashboard after successful registration
+
+    // Simulate instant login after registration
+    const userData = {
+      email: "",
+      name: "",
+      role: "admin", // Assume main registration is for admin
+      authenticated: true
+    };
+    try {
+      // If email etc. available in RegistrationForm, pass here!
+      localStorage.setItem('user', JSON.stringify(userData));
+    } catch {}
     setTimeout(() => {
       navigate('/dashboard');
     }, 2000);

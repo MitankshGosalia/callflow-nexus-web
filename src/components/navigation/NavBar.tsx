@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Logo from "@/components/Logo";
 
 export function NavBar({ isDashboard = false }) {
   // If this is the dashboard, render the dashboard navbar instead
@@ -148,12 +149,12 @@ export function NavBar({ isDashboard = false }) {
           className="flex items-center gap-2 focus:outline-none"
           onClick={() => setOpen(false)}
         >
-          <div className="h-10 w-10 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">AI</span>
-          </div>
+          <Logo size={44} />
           <div>
-            <h1 className="font-bold text-xl">{t('title')}</h1>
-            <p className="text-xs text-muted-foreground hidden sm:block">{t('subtitle')}</p>
+            <h1 className="font-bold text-xl">AI Call Bot</h1>
+            <p className="text-xs text-muted-foreground hidden sm:block">
+              AI-driven Telephony & Virtual Assistant Platform
+            </p>
           </div>
         </Link>
         

@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import Logo from "@/components/Logo";
 
 export function DashboardNavBar() {
   const [open, setOpen] = useState(false);
@@ -113,14 +114,14 @@ export function DashboardNavBar() {
           to="/dashboard" 
           className="flex items-center gap-2 focus:outline-none"
         >
-          <div className="h-10 w-10 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">AI</span>
-          </div>
+          <Logo size={44} />
           <div>
-            <h1 className="font-bold text-xl">{t('dashboardTitle')}</h1>
+            <h1 className="font-bold text-xl">AI Call Bot</h1>
             {user && (
               <p className="text-xs text-muted-foreground">
-                {user.role === 'admin' ? t('adminDashboard') : t('employeeDashboard')}
+                {user.role === 'admin'
+                  ? 'Admin Dashboard'
+                  : 'Employee Dashboard'}
               </p>
             )}
           </div>

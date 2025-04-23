@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from '@/components/navigation/NavBar';
@@ -71,6 +70,13 @@ const Login = () => {
     <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
       <NavBar />
       <main className="container pt-28 pb-20 relative">
+        {/* Admin/Employee Switch */}
+        <div className="mb-4 text-center">
+          <h1 className="text-3xl font-bold mb-1">AI Call Bot Login</h1>
+          <span className="text-muted-foreground text-sm">
+            Please select your role to proceed.
+          </span>
+        </div>
         <FloatingElements 
           count={6} 
           speed="slow" 
