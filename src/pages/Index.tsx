@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { HeroSection } from '@/components/home/HeroSection';
@@ -26,7 +27,7 @@ const Index = () => {
               CallFlow
             </h1>
             <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
-              Transform Your Business Communications with Intelligent Call Management
+              AI-driven Telephony & Virtual Assistant Platform
             </p>
           </div>
         </section>

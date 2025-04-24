@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +17,7 @@ import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Blog from "./pages/Blog";
 
 // Protected pages
 import Dashboard from "./pages/Dashboard";
@@ -93,11 +95,16 @@ const App = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/documentation" element={<Navigate to="/resources" replace />} />
+                <Route path="/use-cases" element={<Navigate to="/solutions" replace />} />
                 
                 {/* Customer routes */}
                 <Route path="/customer/*" element={
                   <ProtectedRoute allowedRoles={['customer']}>
                     <Routes>
+                      <Route path="/" element={<Navigate to="/customer/dashboard" replace />} />
                       <Route path="dashboard" element={<CustomerDashboard />} />
                       <Route path="profile" element={<Profile />} />
                       <Route path="help" element={<Help />} />
@@ -110,6 +117,7 @@ const App = () => {
                 <Route path="/employee/*" element={
                   <ProtectedRoute allowedRoles={['employee', 'admin']}>
                     <Routes>
+                      <Route path="/" element={<Navigate to="/employee/dashboard" replace />} />
                       <Route path="dashboard" element={<EmployeeDashboard />} />
                       <Route path="calllog" element={<CallLog />} />
                       <Route path="ai-agent" element={<AIAgent />} />
@@ -125,14 +133,19 @@ const App = () => {
                 {/* Redirect /dashboard to appropriate dashboard based on role */}
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
-                    {({ user }) => {
-                      if (user?.role === 'customer') {
-                        return <Navigate to="/customer/dashboard" replace />;
-                      }
-                      return <Navigate to="/employee/dashboard" replace />;
-                    }}
+                    {getUserRole() === 'customer' ? 
+                      <Navigate to="/customer/dashboard" replace /> : 
+                      <Navigate to="/employee/dashboard" replace />
+                    }
                   </ProtectedRoute>
                 } />
+                
+                {/* Products page and subpages */}
+                <Route path="/products" element={<Navigate to="/features" replace />} />
+                <Route path="/products/:productId" element={<Navigate to="/features" replace />} />
+                
+                {/* Resources subpages */}
+                <Route path="/resources/:resourceId" element={<Navigate to="/resources" replace />} />
                 
                 {/* Catch all route */}
                 <Route path="*" element={<NotFound />} />

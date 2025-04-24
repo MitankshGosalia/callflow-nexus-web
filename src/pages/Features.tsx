@@ -14,10 +14,10 @@ const Features = () => {
       <main className="pt-24">
         <div className="container py-12">
           <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-            Features
+            CallFlow Features
           </h1>
           <p className="text-xl text-muted-foreground mb-12">
-            Discover all the powerful capabilities of our AI-Driven Call Bot platform.
+            Discover all the powerful capabilities of our AI-Driven Telephony & Virtual Assistant Platform.
           </p>
         </div>
         <FeaturesSection />

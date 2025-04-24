@@ -50,7 +50,7 @@ export function CTASection() {
               
               <FadeIn delay={200}>
                 <p className="text-lg md:text-xl text-white/80 mb-10">
-                  Join thousands of businesses that have revolutionized their customer service with our AI-powered call technology. Get started today with a free 30-day trial.
+                  Join thousands of businesses that have revolutionized their customer service with CallFlow's AI-powered telephony platform. Get started today with a free 30-day trial.
                 </p>
               </FadeIn>
               

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -30,19 +31,19 @@ export function HeroSection() {
           <FadeIn delay={100}>
             <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary ring-1 ring-inset ring-primary/20 mb-6 animate-pulse-glow">
               <span className="h-2 w-2 rounded-full bg-primary me-2"></span>
-              Next Generation Call Management Platform
+              AI-driven Telephony Platform
             </span>
           </FadeIn>
           
           <FadeIn delay={300}>
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 text-gradient">
-              Transform Your Business Communications
+              Revolutionize Customer Communication with AI-Powered Calls
             </h1>
           </FadeIn>
           
           <FadeIn delay={500}>
             <p className="text-xl md:text-2xl text-foreground/80 mb-10 max-w-3xl">
-              Experience seamless customer interactions with our AI-powered call management system. Automate responses, gather insights, and scale your business communications effortlessly.
+              Efficient, Intelligent, and Always Available! Experience seamless customer interactions with our AI-powered call management system.
             </p>
           </FadeIn>
           

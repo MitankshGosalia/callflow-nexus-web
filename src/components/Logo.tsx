@@ -9,23 +9,29 @@ const Logo = ({ size = 40 }: { size?: number }) => (
     <svg viewBox="0 0 40 40" width={size} height={size} fill="none">
       <rect width="40" height="40" fill="url(#gradient)" />
       <path
-        d="M12 20C12 16.5 14.5 14 18 14H22C25.5 14 28 16.5 28 20C28 23.5 25.5 26 22 26H18C14.5 26 12 23.5 12 20Z"
+        d="M12 17C12 14.5 13.5 13 16 13H24C26.5 13 28 14.5 28 17V23C28 25.5 26.5 27 24 27H16C13.5 27 12 25.5 12 23V17Z"
         fill="white"
       />
       <path
-        d="M20 14V26"
+        d="M20 13V27"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
       />
       <path
-        d="M16 17L16 23"
+        d="M15 17L15 23"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
       />
       <path
-        d="M24 17L24 23"
+        d="M25 17L25 23"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M12 20H28"
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
