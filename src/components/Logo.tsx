@@ -3,38 +3,40 @@ import React from "react";
 
 const Logo = ({ size = 40 }: { size?: number }) => (
   <div
-    className="rounded-lg bg-gradient-to-tr from-primary/90 to-purple-500 flex items-center justify-center overflow-hidden"
+    className="rounded-lg bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center overflow-hidden"
     style={{ width: size, height: size }}
   >
     <svg viewBox="0 0 40 40" width={size} height={size} fill="none">
       <rect width="40" height="40" fill="url(#gradient)" />
       <path
-        d="M12 17C12 14.5 13.5 13 16 13H24C26.5 13 28 14.5 28 17V23C28 25.5 26.5 27 24 27H16C13.5 27 12 25.5 12 23V17Z"
+        d="M10 15C10 13 11.5 11 14 11H26C28.5 11 30 13 30 15V25C30 27 28.5 29 26 29H14C11.5 29 10 27 10 25V15Z"
         fill="white"
+        fillOpacity="0.9"
       />
       <path
-        d="M20 13V27"
+        d="M15 18L15 22"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="2.5"
         strokeLinecap="round"
       />
       <path
-        d="M15 17L15 23"
+        d="M20 15L20 25"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="2.5"
         strokeLinecap="round"
       />
       <path
-        d="M25 17L25 23"
+        d="M25 18L25 22"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="2.5"
         strokeLinecap="round"
       />
       <path
-        d="M12 20H28"
+        d="M10 20H30"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.5"
         strokeLinecap="round"
+        strokeDasharray="2 2"
       />
       <defs>
         <linearGradient
@@ -45,8 +47,8 @@ const Logo = ({ size = 40 }: { size?: number }) => (
           y2="40"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#9b87f5" />
-          <stop offset="1" stopColor="#7E69AB" />
+          <stop stopColor="#8b5cf6" />
+          <stop offset="1" stopColor="#6366f1" />
         </linearGradient>
       </defs>
     </svg>

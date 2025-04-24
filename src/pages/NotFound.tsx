@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { NavBar } from "@/components/navigation/NavBar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Home, ArrowLeft, Search } from "lucide-react";
+import { Home, Search } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
@@ -44,27 +44,27 @@ const NotFound = () => {
               </Button>
               
               <Button variant="outline" asChild size="lg">
-                <Link to="/contact" className="flex items-center gap-2">
+                <Link to="/features" className="flex items-center gap-2">
                   <Search className="h-5 w-5" />
-                  Search Site
+                  Explore Features
                 </Link>
               </Button>
             </div>
             
             <div className="mt-16">
-              <h3 className="text-lg font-medium mb-4">Looking for something specific?</h3>
+              <h3 className="text-lg font-medium mb-4">Popular Pages</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Button variant="ghost" asChild>
-                  <Link to="/products">Products</Link>
+                  <Link to="/features">Features</Link>
                 </Button>
                 <Button variant="ghost" asChild>
-                  <Link to="/resources">Resources</Link>
-                </Button>
-                <Button variant="ghost" asChild>
-                  <Link to="/documentation">Documentation</Link>
+                  <Link to="/solutions">Solutions</Link>
                 </Button>
                 <Button variant="ghost" asChild>
                   <Link to="/contact">Contact</Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link to="/login">Login</Link>
                 </Button>
               </div>
             </div>

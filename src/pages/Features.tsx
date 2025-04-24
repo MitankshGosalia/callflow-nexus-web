@@ -11,7 +11,7 @@ const Features = () => {
   return (
     <div className="min-h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
       <NavBar />
-      <main className="pt-24">
+      <main className="pt-10">
         <div className="container py-12">
           <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
             CallFlow Features
