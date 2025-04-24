@@ -24,11 +24,11 @@ const Index = () => {
           <div className="mb-4 flex flex-col items-center">
             <Logo size={68} />
             <h1 className="text-4xl sm:text-5xl font-extrabold mt-4 mb-2">
-              AI Call Bot
+              CallFlow
             </h1>
             <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
-              Intelligent calls & virtual assistance for modern businesses—<br className="hidden sm:block" />
-              seamless, automated, and AI-powered!
+              Revolutionize Customer Communication with AI-Powered Calls—<br className="hidden sm:block" />
+              Efficient, Intelligent, and Always Available!
             </p>
           </div>
         </section>

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,6 +25,8 @@ import AIAgent from "./pages/AIAgent";
 import MakeCall from "./pages/MakeCall";
 import Profile from "./pages/Profile";
 import Resources from "./pages/Resources";
+import CustomerDashboard from "./pages/CustomerDashboard";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
 
 import React from "react";
 
@@ -92,6 +93,20 @@ const App = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                
+                {/* Protected routes - Customer specific */}
+                <Route path="/customer/dashboard" element={
+                  <ProtectedRoute allowedRoles={['customer']}>
+                    <CustomerDashboard />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Protected routes - Employee specific */}
+                <Route path="/employee/dashboard" element={
+                  <ProtectedRoute allowedRoles={['employee']}>
+                    <EmployeeDashboard />
+                  </ProtectedRoute>
+                } />
                 
                 {/* Protected routes - accessible by both admin and employee */}
                 <Route path="/dashboard" element={
