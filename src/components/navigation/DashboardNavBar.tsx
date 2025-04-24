@@ -116,12 +116,14 @@ export function DashboardNavBar() {
         >
           <Logo size={44} />
           <div>
-            <h1 className="font-bold text-xl">AI Call Bot</h1>
+            <h1 className="font-bold text-xl">CallFlow</h1>
             {user && (
               <p className="text-xs text-muted-foreground">
-                {user.role === 'admin'
-                  ? 'Admin Dashboard'
-                  : 'Employee Dashboard'}
+                {user.role === 'customer' 
+                  ? 'Customer Dashboard'
+                  : user.role === 'admin'
+                    ? 'Admin Dashboard'
+                    : 'Employee Dashboard'}
               </p>
             )}
           </div>

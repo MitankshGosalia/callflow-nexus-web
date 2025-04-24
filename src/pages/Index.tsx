@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavBar } from '@/components/navigation/NavBar';
 import { HeroSection } from '@/components/home/HeroSection';
@@ -10,7 +9,7 @@ import { DemoSection } from '@/components/home/DemoSection';
 import { CTASection } from '@/components/home/CTASection';
 import { Footer } from '@/components/layout/Footer';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Logo from '@/components/Logo';  // Changed from { Logo } to default import
+import Logo from '@/components/Logo';
 
 const Index = () => {
   console.log("Rendering Index page");
@@ -27,8 +26,7 @@ const Index = () => {
               CallFlow
             </h1>
             <p className="max-w-2xl mx-auto text-lg text-muted-foreground">
-              Revolutionize Customer Communication with AI-Powered Calls—<br className="hidden sm:block" />
-              Efficient, Intelligent, and Always Available!
+              Transform Your Business Communications with Intelligent Call Management
             </p>
           </div>
         </section>

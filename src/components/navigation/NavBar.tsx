@@ -23,7 +23,6 @@ import {
 import Logo from "@/components/Logo";
 
 export function NavBar({ isDashboard = false }) {
-  // If this is the dashboard, render the dashboard navbar instead
   if (isDashboard) {
     return <DashboardNavBar />;
   }
@@ -87,7 +86,6 @@ export function NavBar({ isDashboard = false }) {
     setSubMenuOpen(subMenuOpen === menu ? null : menu);
   };
   
-  // Public website navigation links
   const navLinks = [
     { 
       name: t('features'), 
@@ -151,9 +149,9 @@ export function NavBar({ isDashboard = false }) {
         >
           <Logo size={44} />
           <div>
-            <h1 className="font-bold text-xl">AI Call Bot</h1>
+            <h1 className="font-bold text-xl">CallFlow</h1>
             <p className="text-xs text-muted-foreground hidden sm:block">
-              AI-driven Telephony & Virtual Assistant Platform
+              Enterprise Call Management Platform
             </p>
           </div>
         </Link>

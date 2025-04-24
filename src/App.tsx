@@ -94,54 +94,43 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 
-                {/* Protected routes - Customer specific */}
-                <Route path="/customer/dashboard" element={
+                {/* Customer routes */}
+                <Route path="/customer/*" element={
                   <ProtectedRoute allowedRoles={['customer']}>
-                    <CustomerDashboard />
+                    <Routes>
+                      <Route path="dashboard" element={<CustomerDashboard />} />
+                      <Route path="profile" element={<Profile />} />
+                      <Route path="help" element={<Help />} />
+                      <Route path="*" element={<Navigate to="/customer/dashboard" replace />} />
+                    </Routes>
                   </ProtectedRoute>
                 } />
                 
-                {/* Protected routes - Employee specific */}
-                <Route path="/employee/dashboard" element={
-                  <ProtectedRoute allowedRoles={['employee']}>
-                    <EmployeeDashboard />
+                {/* Employee routes */}
+                <Route path="/employee/*" element={
+                  <ProtectedRoute allowedRoles={['employee', 'admin']}>
+                    <Routes>
+                      <Route path="dashboard" element={<EmployeeDashboard />} />
+                      <Route path="calllog" element={<CallLog />} />
+                      <Route path="ai-agent" element={<AIAgent />} />
+                      <Route path="make-call" element={<MakeCall />} />
+                      <Route path="profile" element={<Profile />} />
+                      <Route path="resources" element={<Resources />} />
+                      <Route path="help" element={<Help />} />
+                      <Route path="*" element={<Navigate to="/employee/dashboard" replace />} />
+                    </Routes>
                   </ProtectedRoute>
                 } />
                 
-                {/* Protected routes - accessible by both admin and employee */}
+                {/* Redirect /dashboard to appropriate dashboard based on role */}
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="/calllog" element={
-                  <ProtectedRoute>
-                    <CallLog />
-                  </ProtectedRoute>
-                } />
-                <Route path="/help" element={
-                  <ProtectedRoute>
-                    <Help />
-                  </ProtectedRoute>
-                } />
-                <Route path="/ai-agent" element={
-                  <ProtectedRoute>
-                    <AIAgent />
-                  </ProtectedRoute>
-                } />
-                <Route path="/make-call" element={
-                  <ProtectedRoute>
-                    <MakeCall />
-                  </ProtectedRoute>
-                } />
-                <Route path="/profile" element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } />
-                <Route path="/resources" element={
-                  <ProtectedRoute>
-                    <Resources />
+                    {({ user }) => {
+                      if (user?.role === 'customer') {
+                        return <Navigate to="/customer/dashboard" replace />;
+                      }
+                      return <Navigate to="/employee/dashboard" replace />;
+                    }}
                   </ProtectedRoute>
                 } />
                 
